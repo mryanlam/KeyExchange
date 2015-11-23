@@ -44,14 +44,32 @@ def connect_to_server(ip, port):
     clientsocket.send('hello')
 
 
-# p = prime number, a = random value from Zp, alph = generator
-# Build key (alph, a, p)
+# p = prime number, alph = generator
+def buildkey(alph, p):
+    a = random.randrange(1, p - 1)
+    beta = math.exp(alph, a)
+    beta = beta % p
+    return beta
 
 # Key Exchange
 
 # Encrypt with key ElGamal
+def encrypt(p, alph, beta):
+    k = random.randrange(1, p - 1)
+    AESkey = random.getrandbits(128)
+    y1 = math.exp(alph, k)
+    y1 = y1 % p
+    y2 = AESkey * math.exp(beta, k)
+    y2 = y2 % p
+    # send msg
 
 # Decrypt with key ElGamal
+def decrypt(y1, y2, p, alph, beta, a):
+    AESkey = math.exp(y1, a) % p
+    AESkey = math.exp(AESkey, -1) * y2
+    AESkey = AESkey % p
+    return AESkey
+    
 
 # AES msg exchange
 # def secure_message(input):
@@ -64,7 +82,7 @@ def RabinMiller(n, k = 7):
     else:
         s, d = 0, n - 1
         while d & 1 == 0:
-        s, d = s + 1, d >> 1
+            s, d = s + 1, d >> 1
         for a in random.sample(xrange(2, min(n - 2, sys.maxint)), min(n - 4, k)):
             x = pow(a, d, n)
             if x != 1 and x + 1 != n:
@@ -77,7 +95,26 @@ def RabinMiller(n, k = 7):
                         break  
                 if a:
                     return False  
-      return True
+    return True
+      
+#Find Generator
+def Generator(p):
+    k = p - 1
+    while True:
+        alph = random.randrange(1, p)
+        found = True   
+        for a in range(1, p):
+            # make sure int?
+            exp = k / a
+            test = math.pow(alph, exp)
+            if (exp % p) == 1:
+                found = False
+                break
+        if found:
+           return alph
+    return 0
+        
+
 #Returns a random prime number
 def get_random_prime():
     random_generator = Crypto.Random.new().read
