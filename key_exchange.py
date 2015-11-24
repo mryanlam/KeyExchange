@@ -10,17 +10,28 @@ def main(args):
     parse.add_argument('-s', '--isServer', type = int, default = True, required = True)
     parse.add_argument('-i', '--ip', type = str)
     parse.add_argument('-p', '--port', type = int, required = True)
-
+    
     args = parse.parse_args()
     isServer = args.isServer
     ip = args.ip
     port = args.port
-
+   
     if isServer == 0:
         start_server(port)
+        # Establish Connection
+        # Send Public Key Info
+        # Recieve Encrypted AES Key
+        # Decrypt AES Key
+        # Use AES Key for future
+        
     else:
         connect_to_server(ip, port)
-
+        # Server Hello
+        # Recieve Public Key
+        # Generate AES Key and random number K
+        # Encrypt AES Key with K using El Gamal
+        # Use AES Key for future
+        
 
 # Listen for a connection (Server)
 # http://stackoverflow.com/questions/7749341/very-basic-python-client-socket-example
@@ -28,29 +39,33 @@ def start_server(port):
     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serversocket.bind(('localhost', port))
     serversocket.listen(5) # become a server socket, maximum 5 connections
-    while True:
-        connection, address = serversocket.accept()
-        buf = connection.recv(64)
-        if len(buf) > 0:
-            print(buf)
-            break
-     p = 0
-     prime = False
-     while !prime:
-         p = random.
-         prime = RabinMiller(p)
-     alph = generator(p)
-     a = random.randrange(1, p - 1)
-     beta = buildkey(alph, a, p)
-     public_key = dict()
-     public_key[alph] = alph
-     public_key[beta] = beta
-     public_key[p] = p
-     json_pub_key = json.dumps(public_key)
-     serversocket.send(json_pub_key)
-     #get encrypted aes key as json_aes_key
-     #AESkey = decrypt(json_aes_key[y1], json_aes_key[y2], p, alph, beta, a)
+    
+    connection, address = serversocket.accept()
+    buf = connection.recv(64)
+    if len(buf) > 0:
+        print(buf)
 
+
+    p = 0
+    while True:
+        #consider changing
+        p = random.getrandbits(128)
+        if RabinMiller(p):
+            break
+    alph = generator(p)
+    a = random.randrange(1, p - 1)
+    beta = buildkey(alph, a, p)
+    public_key = dict()
+    public_key[alph] = alph
+    public_key[beta] = beta
+    public_key[p] = p
+    json_pub_key = json.dumps(public_key)
+    connection.send(json_pub_key)
+    json_aes_key = clientsocket.recv(128)
+    aes_key = json.loads(json_aes_key)
+    #get encrypted aes key as aes_key
+    AESkey = decrypt(aes_key[y1], aes_key[y2], p, alph, beta, a)
+     
 
 # Connect to a server (Client)
 def connect_to_server(ip, port):
@@ -86,8 +101,8 @@ def gety1(p, alph, k):
     y1 = math.exp(alph, k)
     y1 = y1 % p
     return y1
-
-def gety2(p, beta, k, AESkey)
+    
+def gety2(p, beta, k, AESkey):
     y2 = AESkey * math.exp(beta, k)
     y2 = y2 % p
     return y2
@@ -117,9 +132,9 @@ def extended_euclid(a, b):
 # def secure_message(input):
 #Rabin Miller
 def RabinMiller(n, k = 7):
-    if n < 6:
+    if n < 6: 
         return [False, False, True, True, False, True][n]
-    elif n & 1 == 0:
+    elif n & 1 == 0: 
         return False
     else:
         s, d = 0, n - 1
@@ -133,18 +148,18 @@ def RabinMiller(n, k = 7):
                     if x == 1:
                         return False
                     elif x == n - 1:
-                        a = 0
-                        break
+                        a = 0  
+                        break  
                 if a:
-                    return False
+                    return False  
     return True
-
+      
 #Find Generator
 def Generator(p):
     k = p - 1
     while True:
         alph = random.randrange(1, p)
-        found = True
+        found = True   
         for a in range(1, p):
             # make sure int?
             exp = k / a
@@ -155,7 +170,7 @@ def Generator(p):
         if found:
            return alph
     return 0
-
+        
 
 #Returns a random prime number
 def get_random_prime():
