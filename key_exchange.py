@@ -157,7 +157,7 @@ def RabinMiller(n, k = 7):
     return True
       
 #Find Generator
-def Generator(p):
+def generator(p):
     k = p - 1
     while True:
         alph = random.randrange(1, p)
