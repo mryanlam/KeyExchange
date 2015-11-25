@@ -7,7 +7,7 @@ import json
 
 def main(args):
     parse = argparse.ArgumentParser()
-    parse.add_argument('-s', '--isServer', type = int, default = True, required = True)
+    parse.add_argument('-s', '--isServer', type = int, required = True)
     parse.add_argument('-i', '--ip', type = str)
     parse.add_argument('-p', '--port', type = int, required = True)
     
