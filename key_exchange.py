@@ -104,12 +104,12 @@ def buildkey(alph, a, p):
 # Encrypt with key ElGamal
 def gety1(p, alph, k):
     k = random.randrange(1, p - 1)
-    y1 = math.exp(alph, k)
+    y1 = alph**k
     y1 = y1 % p
     return y1
     
 def gety2(p, beta, k, AESkey):
-    y2 = AESkey * math.exp(beta, k)
+    y2 = AESkey * (beta**k)
     y2 = y2 % p
     return y2
 
