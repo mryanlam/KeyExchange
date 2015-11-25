@@ -37,34 +37,35 @@ def main(args):
 # http://stackoverflow.com/questions/7749341/very-basic-python-client-socket-example
 def start_server(port):
     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    serversocket.bind(('localhost', port))
+    serversocket.bind((socket.gethostname(), port))
     serversocket.listen(5) # become a server socket, maximum 5 connections
     
-    connection, address = serversocket.accept()
-    buf = connection.recv(64)
-    if len(buf) > 0:
-        print(buf)
-
-
-    p = 0
     while True:
-        #consider changing
-        p = random.getrandbits(128)
-        if RabinMiller(p):
+        connection, address = serversocket.accept()
+        buf = connection.recv(64)
+        if len(buf) > 0:
+            print(buf)
+        
+            p = 0
+            while True:
+                #consider changing
+                p = random.getrandbits(128)
+                if RabinMiller(p):
+                    break
+            alph = generator(p)
+            a = random.randrange(1, p - 1)
+            beta = buildkey(alph, a, p)
+            public_key = dict()
+            public_key[alph] = alph
+            public_key[beta] = beta
+            public_key[p] = p
+            json_pub_key = json.dumps(public_key)
+            connection.send(json_pub_key)
+            json_aes_key = clientsocket.recv(128)
+            aes_key = json.loads(json_aes_key)
+            #get encrypted aes key as aes_key
+            AESkey = decrypt(aes_key[y1], aes_key[y2], p, alph, beta, a)
             break
-    alph = generator(p)
-    a = random.randrange(1, p - 1)
-    beta = buildkey(alph, a, p)
-    public_key = dict()
-    public_key[alph] = alph
-    public_key[beta] = beta
-    public_key[p] = p
-    json_pub_key = json.dumps(public_key)
-    connection.send(json_pub_key)
-    json_aes_key = clientsocket.recv(128)
-    aes_key = json.loads(json_aes_key)
-    #get encrypted aes key as aes_key
-    AESkey = decrypt(aes_key[y1], aes_key[y2], p, alph, beta, a)
      
 
 # Connect to a server (Client)
