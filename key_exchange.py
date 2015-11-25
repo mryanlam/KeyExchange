@@ -68,6 +68,8 @@ def start_server(port):
             aes_key = json.loads(json_aes_key)
             #get encrypted aes key as aes_key
             AESkey = decrypt(aes_key['y1'], aes_key['y2'], p, alph, beta, a)
+            print('y1 is ' + str(aes_key['y1']))
+            print('y2 is ' + str(aes_key['y2']))
             print('key is ' + str(AESkey))
             
             
@@ -91,6 +93,8 @@ def connect_to_server(ip, port):
     AES_message = dict()
     AES_message['y1'] = y1
     AES_message['y2'] = y2
+    print('y1 is ' + str(y1))
+    print('y2 is ' + str(y2))
     #send encrypted key to p1
     clientsocket.send(json.dumps(AES_message))
     print('key is ' + str(AESkey))
