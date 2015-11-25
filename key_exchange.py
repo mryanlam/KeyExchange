@@ -99,7 +99,7 @@ def connect_to_server(ip, port):
     AES_message['y2'] = y2
     print('p is ' + str(public_key['p']))
     print('alph is ' + str(public_key['alph']))
-    print('beta is ' + str(public_key['beta'])
+    print('beta is ' + str(public_key['beta']))
     print('k is ' + str(k))
     print('y1 is ' + str(y1))
     print('y2 is ' + str(y2))
