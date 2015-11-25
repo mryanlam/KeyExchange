@@ -64,7 +64,7 @@ def start_server(port):
             public_key[p] = p
             json_pub_key = json.dumps(public_key)
             connection.send(json_pub_key)
-            json_aes_key = clientsocket.recv(128)
+            json_aes_key = connection.recv(128)
             aes_key = json.loads(json_aes_key)
             #get encrypted aes key as aes_key
             AESkey = decrypt(aes_key[y1], aes_key[y2], p, alph, beta, a)
