@@ -52,6 +52,7 @@ def start_server(port):
                 #consider changing
                 p = random.getrandbits(128)
                 if RabinMiller(p):
+                    print('Found prime ' + str(p))
                     break
             alph = generator(p)
             a = random.randrange(1, p - 1)
@@ -66,6 +67,8 @@ def start_server(port):
             aes_key = json.loads(json_aes_key)
             #get encrypted aes key as aes_key
             AESkey = decrypt(aes_key[y1], aes_key[y2], p, alph, beta, a)
+            
+            
             break
      
 
@@ -162,7 +165,7 @@ def generator(p):
     factors = prime_factors(k)
     while True:
         alph = random.randrange(1, p)
-        print('Testing genrator' + str(alph))
+        print('Testing genrator ' + str(alph))
         found = True   
         for a in factors:
             # make sure int?
@@ -191,6 +194,7 @@ def prime_factors(n):
         else:
             n //= i
             factors.append(i)
+            print('found factor ' + str(i))
     if n > 1:
         factors.append(n)
     return factors
