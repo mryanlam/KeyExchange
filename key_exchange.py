@@ -160,11 +160,11 @@ def RabinMiller(n, k = 7):
 #Find Generator
 def generator(p):
     k = p -1
-    
+    factors = prime_factors(k)
     while True:
         alph = random.randrange(1, p)
         found = True   
-        for a in xrange(1, p):
+        for a in factors:
             # make sure int?
             exp = k / a
             test = alph**exp
@@ -193,5 +193,6 @@ def prime_factors(n):
     if n > 1:
         factors.append(n)
     return factors
+
 if __name__ == '__main__':
     main(sys.argv[1:])
