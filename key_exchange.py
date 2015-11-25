@@ -95,7 +95,7 @@ def connect_to_server(ip, port):
 
 # p = prime number, alph = generator
 def buildkey(alph, a, p):
-    beta = math.exp(alph, a)
+    beta = alph**a
     beta = beta % p
     return beta
 
