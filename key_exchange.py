@@ -59,15 +59,15 @@ def start_server(port):
             a = random.randrange(1, p - 1)
             beta = buildkey(alph, a, p)
             public_key = dict()
-            public_key[alph] = alph
-            public_key[beta] = beta
-            public_key[p] = p
+            public_key['alph'] = alph
+            public_key['beta'] = beta
+            public_key['p'] = p
             json_pub_key = json.dumps(public_key)
             connection.send(json_pub_key)
             json_aes_key = connection.recv(128)
             aes_key = json.loads(json_aes_key)
             #get encrypted aes key as aes_key
-            AESkey = decrypt(aes_key[y1], aes_key[y2], p, alph, beta, a)
+            AESkey = decrypt(aes_key['y1'], aes_key['y2'], p, alph, beta, a)
             
             
             break
@@ -83,13 +83,13 @@ def connect_to_server(ip, port):
     #get (p, alpha, beta)
     # download json from server and unpack it
     public_key = json.loads(json_pub_key)
-    k = random.randrange(1, public_key[p] - 1)
+    k = random.randrange(1, public_key['p'] - 1)
     AESkey = random.getrandbits(128)
-    y1 = gety1(public_key[p], public_key[alph], k)
-    y2 = gety2(public_key[p], public_key[beta], k, AESkey)
+    y1 = gety1(public_key['p'], public_key['alph'], k)
+    y2 = gety2(public_key['p'], public_key['beta'], k, AESkey)
     AES_message = dict()
-    AES_message[y1] = y1
-    AES_message[y2] = y2
+    AES_message['y1'] = y1
+    AES_message['y2'] = y2
     #send encrypted key to p1
     clientsocket.send(json.dumps(AES_message))
 
