@@ -162,7 +162,7 @@ def generator(p):
     while True:
         alph = random.randrange(1, p)
         found = True   
-        for a in range(1, p):
+        for a in xrange(1, p):
             # make sure int?
             exp = k / a
             test = math.pow(alph, exp)
