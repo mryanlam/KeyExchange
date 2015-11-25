@@ -162,6 +162,7 @@ def generator(p):
     factors = prime_factors(k)
     while True:
         alph = random.randrange(1, p)
+        print('Testing genrator' + str(alph))
         found = True   
         for a in factors:
             # make sure int?
@@ -181,6 +182,7 @@ def get_random_prime():
     return Crypto.Util.number.getPrime(1024, random_generator)
 
 def prime_factors(n):
+    print('gathering prime factors...')
     i = 2
     factors = []
     while i * i <= n:
