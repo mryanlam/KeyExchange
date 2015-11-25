@@ -4,6 +4,7 @@ import Crypto # https://www.dlitz.net/software/pycrypto/
 import socket
 import argparse
 import json
+import random
 
 def main(args):
     parse = argparse.ArgumentParser()
