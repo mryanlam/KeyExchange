@@ -68,6 +68,7 @@ def start_server(port):
             aes_key = json.loads(json_aes_key)
             #get encrypted aes key as aes_key
             AESkey = decrypt(aes_key['y1'], aes_key['y2'], p, alph, beta, a)
+            print('key is ' + str(AESkey))
             
             
             break
@@ -92,6 +93,7 @@ def connect_to_server(ip, port):
     AES_message['y2'] = y2
     #send encrypted key to p1
     clientsocket.send(json.dumps(AES_message))
+    print('key is ' + str(AESkey))
 
 # p = prime number, alph = generator
 def buildkey(alph, a, p):
@@ -115,7 +117,7 @@ def gety2(p, beta, k, AESkey):
 
 # Decrypt with key ElGamal
 def decrypt(y1, y2, p, alph, beta, a):
-    AESkey = extended_euclid(y1 * a,p) * y2
+    AESkey = inverse(y1 * a,p) * y2
     AESkey = AESkey % p
     return AESkey
 
