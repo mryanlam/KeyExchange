@@ -5,6 +5,7 @@ import socket
 import argparse
 import json
 import random
+import intertools
 
 def main(args):
     parse = argparse.ArgumentParser()
@@ -158,14 +159,15 @@ def RabinMiller(n, k = 7):
       
 #Find Generator
 def generator(p):
-    k = p - 1
+    k = p -1
+    
     while True:
         alph = random.randrange(1, p)
         found = True   
         for a in xrange(1, p):
             # make sure int?
             exp = k / a
-            test = math.pow(alph, exp)
+            test = alph**exp
             if (exp % p) == 1:
                 found = False
                 break
