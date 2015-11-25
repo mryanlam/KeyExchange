@@ -121,8 +121,8 @@ def gety2(p, beta, k, AESkey):
 
 # Decrypt with key ElGamal
 def decrypt(y1, y2, p, alph, beta, a):
-    AESkey = inverse(y1 * a,p) * y2
-    AESkey = AESkey % p
+    AESkey = inverse(y1 * a, p) * y2
+    #AESkey = AESkey % p
     return AESkey
 
 # Calculates the multiplicative inverse
