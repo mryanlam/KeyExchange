@@ -50,7 +50,7 @@ def start_server(port):
         
             p = 0
             while True:
-                #consider changing
+                #change p size
                 p = random.getrandbits(8)
                 if RabinMiller(p):
                     print('Found prime ' + str(p))
@@ -91,7 +91,8 @@ def connect_to_server(ip, port):
     # download json from server and unpack it
     public_key = json.loads(json_pub_key)
     k = random.randrange(1, public_key['p'] - 1)
-    AESkey = random.getrandbits(128)
+    # change AES key size
+    AESkey = random.getrandbits(4)
     y1 = gety1(public_key['p'], public_key['alph'], k)
     y2 = gety2(public_key['p'], public_key['beta'], k, AESkey)
     AES_message = dict()
