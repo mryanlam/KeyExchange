@@ -68,6 +68,10 @@ def start_server(port):
             aes_key = json.loads(json_aes_key)
             #get encrypted aes key as aes_key
             AESkey = decrypt(aes_key['y1'], aes_key['y2'], p, alph, beta, a)
+            print('p is ' + str(p))
+            print('alph is ' + str(alph))
+            print('beta is ' + str(beta))
+            print('a is ' + str(a))
             print('y1 is ' + str(aes_key['y1']))
             print('y2 is ' + str(aes_key['y2']))
             print('key is ' + str(AESkey))
@@ -93,6 +97,10 @@ def connect_to_server(ip, port):
     AES_message = dict()
     AES_message['y1'] = y1
     AES_message['y2'] = y2
+    print('p is ' + str(public_key['p']))
+    print('alph is ' + str(public_key['alph']))
+    print('beta is ' + str(public_key['beta'])
+    print('k is ' + str(k))
     print('y1 is ' + str(y1))
     print('y2 is ' + str(y2))
     #send encrypted key to p1
@@ -122,7 +130,7 @@ def gety2(p, beta, k, AESkey):
 # Decrypt with key ElGamal
 def decrypt(y1, y2, p, alph, beta, a):
     AESkey = inverse(y1 * a, p) * y2
-    #AESkey = AESkey % p
+    AESkey = AESkey % p
     return AESkey
 
 # Calculates the multiplicative inverse
