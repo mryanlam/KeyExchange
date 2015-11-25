@@ -5,7 +5,6 @@ import socket
 import argparse
 import json
 import random
-import intertools
 
 def main(args):
     parse = argparse.ArgumentParser()
