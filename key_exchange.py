@@ -50,7 +50,7 @@ def start_server(port):
             p = 0
             while True:
                 #consider changing
-                p = random.getrandbits(64)
+                p = random.getrandbits(8)
                 if RabinMiller(p):
                     print('Found prime ' + str(p))
                     break
@@ -168,6 +168,7 @@ def generator(p):
         print('Testing genrator ' + str(alph))
         found = True   
         for a in factors:
+            print('Testing ' + str(a))
             # make sure int?
             exp = k / a
             test = alph**exp
@@ -189,7 +190,6 @@ def prime_factors(n):
     i = 2
     factors = []
     while i * i <= n:
-        print('testing ' + str(i))
         if n % i:
             i += 1
         else:
