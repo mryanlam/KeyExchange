@@ -9,17 +9,20 @@ import random
 
 def main(args):
     parse = argparse.ArgumentParser()
-    parse.add_argument('-s', '--isServer', type = int, required = True)
+    parse.add_argument('-s', '--isServer', type = int)
     parse.add_argument('-i', '--ip', type = str)
     parse.add_argument('-p', '--port', type = int, required = True)
+    parse.add_argument('-m', '--method', type = int, default = 0)
     
     args = parse.parse_args()
     isServer = args.isServer
     ip = args.ip
     port = args.port
+    method = args.method
    
     if isServer == 0:
-        start_server(port)
+        if method == 0:
+            start_server(port)
         # Establish Connection
         # Send Public Key Info
         # Recieve Encrypted AES Key
@@ -27,7 +30,8 @@ def main(args):
         # Use AES Key for future
         
     else:
-        connect_to_server(ip, port)
+        if method == 0:
+            connect_to_server(ip, port)
         # Server Hello
         # Recieve Public Key
         # Generate AES Key and random number K
@@ -76,7 +80,10 @@ def start_server(port):
             print('y2 is ' + str(aes_key['y2']))
             print('key is ' + str(AESkey))
             
-            
+            cipher = AES.new(AESkey) # check formating
+            msg = connection.recv(64)
+            msg = cipher.decrypt(msg)
+            print('Final Message : ' + msg)
             break
      
 
@@ -107,6 +114,10 @@ def connect_to_server(ip, port):
     #send encrypted key to p1
     clientsocket.send(json.dumps(AES_message))
     print('key is ' + str(AESkey))
+    
+    cipher = AES.new(AESkey) # check formating
+    msg = cipher.encrypt('It\'s a secret to everybody')
+    clientsocket.send(msg)
 
 # p = prime number, alph = generator
 def buildkey(alph, a, p):
