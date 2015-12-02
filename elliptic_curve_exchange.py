@@ -32,6 +32,9 @@ def start_server(port):
         buf = connection.recv(64)
         if len(buf) > 0:
             print(buf)
+        #Generate p as before
+        #Chose a, b
+        
         break
         
 def connect_to_server(ip, port):
