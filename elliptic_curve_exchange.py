@@ -55,7 +55,7 @@ def start_server(port, pSize):
                     break
             privKey = random.randrange(1, p - 1)
             aux_base = random.randrange(1, p - 1)
-            betaX, betaY = curve_dot(alphX, alphY, privKey)
+            betaX, betaY = curve_dot(alphX, alphY, a, privKey)
             public_key = dict()
             public_key['alphX'] = alphX
             public_key['alphY'] = alphY
@@ -69,13 +69,26 @@ def start_server(port, pSize):
             connection.send(json_pub_key)
             json_aes_key = connection.recv(128)
             aes_key = json.loads(json_aes_key)
+            AESkey = decrypt(aes_key['y1X'], aes_key['y1Y'], aes_key['coords'], a, privKey, aux_base)
+            print('key is ' + AESkey)
             #DECRYPT KEY
             break
+
+def decrypt(y1X, y1Y, coords, a, privKey, aux_base):
+    key = ''
+    for point in xrange(coords):
+        x, y = curve_dot(y1X, y1Y, a, privKey)
+        #need inverse of y1?
+        x, y = curve_add(point['x'], point['y'], x, y)
+        #check if still int
+        m = (x - 1) / aux_base
+        key = key + str(m)
+    return key
         
 def curve_dot(x, y, a, q):
     # q(x,y)
     for i in xrange(q):
-        lam = calc_lambda(x,y)
+        lam = calc_lambda(x,y,a)
         x_r = (lam ** 2)
         x_r -= 2 * x
         y_r = lam * (x_r - x)
@@ -83,6 +96,15 @@ def curve_dot(x, y, a, q):
         x = x_r
         y = y_r
     return x, y
+
+def curve_add(px, py, qx, qy):
+    lam = qy - py
+    lam /= qx - px
+    x_r = x_r = (lam ** 2)
+    x_r -= 2 * x
+    y_r = lam * (x_r - x)
+    y_r -= y
+    return x_r, y_r
         
 # https://en.wikipedia.org/wiki/Elliptic_curve_point_multiplication#Point_doubling
 def calc_lambda(x, y, a):
@@ -96,24 +118,35 @@ def connect_to_server(ip, port, keySize):
     json_pub_key = clientsocket.recv(128)
     public_key = json.loads(json_pub_key)
     k = random.randrange(1, public_key['p'] - 1)
-    y1 = curve_dot(public_key['alphX'], public_key['alphY'], k)
-    y2 = curve_dot(public_key['betaX'], public_key['betaY'], k)
+    y1X, y1Y = curve_dot(public_key['alphX'], public_key['alphY'], k)
+    y2X, y1Y = curve_dot(public_key['betaX'], public_key['betaY'], k)
     AESkey = random.getrandbits(keySize)
+    str_AESkey = str(AESkey)
     #koblitz each character
+    encoded_AESkey = [] # List of dicts that have x and y as keys
+    for char in str_AESkey:
+        x, y = koblitz(public_key['a'], public_key['b'], public_key['p'], char, public_key['aux_base'])
+        coords = dict()
+        coords['x'], coords['y'] = curve_add(x, y, y2X, y2Y)
+        encoded_AESkey.append(coords)
+    json_encoded_AES = json.loads(encoded_AESkey)
     AES_message = dict()
-    AES_message['y1'] = y1
-    #AES_message['y2'] = y2
+    AES_message['y1X'] = y1X
+    AES_message['y1Y'] = y1Y
+    AES_message['coords'] = coords
     clientsocket.send(json.dumps(AES_message))
     
 def koblitz(a, b, p, m, k):
+    i = 1
     while true:
-        x = m*k + 1
+        x = m*k + i
         z = get_z(x, a, b, p)
-        if (z != -1):
-            return x, math.sqrt(z)
+        if (z != -i):
+            return (x, math.sqrt(z))
+        else:
+            i++
     
-    
-    
+
 def get_z(x, a, b, p):
     z = (x**3) + (a*x) + b
     z = z % p
