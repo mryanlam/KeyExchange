@@ -188,7 +188,9 @@ def RabinMiller(n, k = 7):
 #Find Generator
 def generator(p):
     k = p -1
-    factors = prime_factors(k)
+    factors = []
+    factors = gather_prime_factors(k, factors)
+    #factors = prime_factors(k)
     while True:
         alph = random.randrange(1, p)
         print('Testing genrator ' + str(alph))
@@ -225,6 +227,46 @@ def prime_factors(n):
     if n > 1:
         factors.append(n)
     return factors
+
+def gather_prime_factors(m, factors):
+    print('gathering prime factors...')
+    #factors = []
+    i = 100;
+    d = -1
+    while result < 0:
+        d = polar_alg(m, b)
+        b = b + 1
+    c = m / d
+    factors = check(d, factors)
+    factors = check(c, factors)
+    return factors
+
+def check(n, factors):
+    if RabinMiller(n):
+        factors.append(n)
+        print('found factor ' + str(n))
+    else:
+        factors = gather_prime_factors(n, factors)
+    return factors
+    
+def polar_alg(m, b):
+    a = 2
+    for j in xrange(2, b):
+        a = (a**j) % m
+    d = gcd(a - 1, m)
+    if (1 < d) and (d < m):
+        return d
+    else:
+        return -1
+
+# y is bigger factor        
+def gcd(x, y):
+    r = 0
+    while (x > 0):
+        r = y % x
+        y = x
+        x = r
+    return r
 
 if __name__ == '__main__':
     main(sys.argv[1:])
