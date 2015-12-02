@@ -12,17 +12,18 @@ def main(args):
     parse.add_argument('-s', '--isServer', type = int)
     parse.add_argument('-i', '--ip', type = str)
     parse.add_argument('-p', '--port', type = int, required = True)
-    parse.add_argument('-m', '--method', type = int, default = 0)
+    parse.add_argument('-s', '--pSize', type = int, default = 64)
+    parse.add_argument('-k', '--keySize', type = int, default = 32)
     
     args = parse.parse_args()
     isServer = args.isServer
     ip = args.ip
     port = args.port
-    method = args.method
+    pSize = args.pSize
+    keySize = args.keySize
    
     if isServer == 0:
-        if method == 0:
-            start_server(port)
+        start_server(port, pSize)
         # Establish Connection
         # Send Public Key Info
         # Recieve Encrypted AES Key
@@ -30,8 +31,7 @@ def main(args):
         # Use AES Key for future
         
     else:
-        if method == 0:
-            connect_to_server(ip, port)
+        connect_to_server(ip, port, keySize)
         # Server Hello
         # Recieve Public Key
         # Generate AES Key and random number K
@@ -41,7 +41,7 @@ def main(args):
 
 # Listen for a connection (Server)
 # http://stackoverflow.com/questions/7749341/very-basic-python-client-socket-example
-def start_server(port):
+def start_server(port, pSize):
     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serversocket.bind((socket.gethostname(), port))
     serversocket.listen(5) # become a server socket, maximum 5 connections
@@ -55,7 +55,7 @@ def start_server(port):
             p = 0
             while True:
                 #change p size
-                p = random.getrandbits(8)
+                p = random.getrandbits(pSize)
                 if RabinMiller(p):
                     print('Found prime ' + str(p))
                     break
@@ -88,7 +88,7 @@ def start_server(port):
      
 
 # Connect to a server (Client)
-def connect_to_server(ip, port):
+def connect_to_server(ip, port, keySize):
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     clientsocket.connect((ip, port))
     clientsocket.send('hello')
@@ -99,7 +99,7 @@ def connect_to_server(ip, port):
     public_key = json.loads(json_pub_key)
     k = random.randrange(1, public_key['p'] - 1)
     # change AES key size
-    AESkey = random.getrandbits(4)
+    AESkey = random.getrandbits(keySize)
     y1 = gety1(public_key['p'], public_key['alph'], k)
     y2 = gety2(public_key['p'], public_key['beta'], k, AESkey)
     AES_message = dict()
