@@ -1,6 +1,6 @@
 import os
 import sys
-import Crypto # https://www.dlitz.net/software/pycrypto/
+from Crypto.Cipher import AES # https://www.dlitz.net/software/pycrypto/
 import socket
 import argparse
 import random
