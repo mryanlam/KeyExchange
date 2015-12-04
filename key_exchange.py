@@ -109,9 +109,8 @@ def connect_to_server(ip, port, keySize):
     k = random.randrange(1, public_key['p'] - 1)
     # change AES key size
     AESkey = random.getrandbits(keySize)
-    str(AESkey)
     y2_list = []
-    for digit in AESkey:
+    for digit in str(AESkey):
         y2_list.append(gety2(public_key['p'], public_key['beta'], k, digit))
     y1 = gety1(public_key['p'], public_key['alph'], k)
     AES_message = dict()
