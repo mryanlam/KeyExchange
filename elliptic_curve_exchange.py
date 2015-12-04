@@ -73,7 +73,7 @@ def start_server(port, pSize):
             public_key['aux_base'] = aux_base
             json_pub_key = json.dumps(public_key)
             connection.send(json_pub_key)
-            json_aes_key = connection.recv(999999999999)
+            json_aes_key = connection.recv(999999999)
             aes_key = json.loads(json_aes_key)
             AESkey = decrypt(aes_key['y1X'], aes_key['y1Y'], aes_key['coords'], a, privKey, aux_base)
             
@@ -88,7 +88,7 @@ def start_server(port, pSize):
 
 def decrypt(y1X, y1Y, coords, a, privKey, aux_base):
     key = ''
-    for point in xrange(coords):
+    for point in coords:
         x, y = curve_dot(y1X, y1Y, a, privKey)
         #need inverse of y1?
         x, y = curve_add(point['x'], point['y'], x, y)
