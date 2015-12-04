@@ -114,7 +114,7 @@ def connect_to_server(ip, port, keySize):
     clientsocket.send(msg)
     msg = clientsocket.recv(64)
     msg = cipher.decrypt(msg)
-    print('Response : ' + depaddMsg(msg))
+    print('Response : ' + msg)
 
     
 # p = prime number, alph = generator
