@@ -1,4 +1,3 @@
-from __future__ import division
 import os
 import sys
 from Crypto.Cipher import AES # https://www.dlitz.net/software/pycrypto/
