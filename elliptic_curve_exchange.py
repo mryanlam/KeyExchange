@@ -137,8 +137,8 @@ def connect_to_server(ip, port):
     #koblitz each character
     encoded_AESkey = [] # List of dicts that have x and y as keys
     for char in str_AESkey:
-        print(char)
         x, y = koblitz(public_key['a'], public_key['b'], public_key['p'], int(char), public_key['aux_base'])
+        print(str(x) + ' ' + str(y))
         coords = dict()
         coords['x'], coords['y'] = curve_add(x, y, y2X, y2Y)
         encoded_AESkey.append(coords)
