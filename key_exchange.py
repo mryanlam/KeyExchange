@@ -27,19 +27,9 @@ def main(args):
    
     if isServer == 0:
         start_server(port, pSize)
-        # Establish Connection
-        # Send Public Key Info
-        # Recieve Encrypted AES Key
-        # Decrypt AES Key
-        # Use AES Key for future
-        
+
     else:
         connect_to_server(ip, port, keySize)
-        # Server Hello
-        # Recieve Public Key
-        # Generate AES Key and random number K
-        # Encrypt AES Key with K using El Gamal
-        # Use AES Key for future
         
 
 # Listen for a connection (Server)
@@ -57,7 +47,6 @@ def start_server(port, pSize):
         
             p = 0
             while True:
-                #change p size
                 p = random.getrandbits(pSize)
                 if RabinMiller(p):
                     print('Found prime ' + str(p))
@@ -71,11 +60,13 @@ def start_server(port, pSize):
             public_key['beta'] = beta
             public_key['p'] = p
             json_pub_key = json.dumps(public_key)
+            #send public key
             connection.send(json_pub_key)
+            #recieve public key
             json_aes_key = connection.recv(128)
             aes_key = json.loads(json_aes_key)
-            #get encrypted aes key as aes_key
             aes_key_list = []
+            #decrypt by character
             for digit in aes_key['y2']:
                 aes_key_list.append(decrypt(aes_key['y1'], digit, p, alph, beta, a))
             AESkey = "".join([str(x) for x in aes_key_list])
@@ -83,13 +74,11 @@ def start_server(port, pSize):
             print('alph is ' + str(alph))
             print('beta is ' + str(beta))
             print('a is ' + str(a))
-            print('y1 is ' + str(aes_key['y1']))
             print('key is ' + str(AESkey))
-            
             cipher = AES.new(str(AESkey)) # check formating
             msg = connection.recv(64)
             msg = cipher.decrypt(msg)
-            print('Final Message : ' + depaddMsg(msg))
+            print('Final Message : ' + msg)
             msg = cipher.encrypt('1111111111111111')
             connection.send(msg)
             break
@@ -101,14 +90,11 @@ def connect_to_server(ip, port, keySize):
     clientsocket.connect((ip, port))
     clientsocket.send('hello')
     json_pub_key = clientsocket.recv(128)
-
-    #get (p, alpha, beta)
-    # download json from server and unpack it
+    #get public key
     public_key = json.loads(json_pub_key)
     k = random.randrange(1, 10) 
-    # change AES key size
+    #generate new key
     AESkey = random.randrange(1000000000000000, 9999999999999999) 
-    
     y2_list = []
     for digit in str(AESkey):
         y2_list.append(gety2(public_key['p'], public_key['beta'], k, int(digit)))
@@ -120,40 +106,16 @@ def connect_to_server(ip, port, keySize):
     print('alph is ' + str(public_key['alph']))
     print('beta is ' + str(public_key['beta']))
     print('k is ' + str(k))
-    print('y1 is ' + str(y1))
-    #send encrypted key to p1
     clientsocket.send(json.dumps(AES_message))
     print('key is ' + str(AESkey))
     print sys.getsizeof(AESkey)
     cipher = AES.new(str(AESkey)) # check formating
-    msg = paddMsg('It\'s a secret to everybody')
-    print sys.getsizeof(AESkey)
     msg = cipher.encrypt('1111111111111111')
     clientsocket.send(msg)
     msg = clientsocket.recv(64)
     msg = cipher.decrypt(msg)
     print('Response : ' + depaddMsg(msg))
 
-def paddMsg(msg):
-    padding = len(msg) % 16
-    for i in xrange(padding):
-        msg = msg + '$'
-    return msg
-
-def depaddMsg(msg):
-    for i in xrange(len(msg)):
-        if msg[i] == '$':
-            msg = msg[:20]
-            break
-    return msg
-        
-        
-
-def randomBytes(n):
-    bytes = ""
-    for i in range(n):
-        bytes += str(random.getrandbits(8))
-    return bytes
     
 # p = prime number, alph = generator
 def buildkey(alph, a, p):
@@ -161,7 +123,6 @@ def buildkey(alph, a, p):
     beta = beta % p
     return beta
 
-# Key Exchange
 
 # Encrypt with key ElGamal
 def gety1(p, alph, k):
@@ -254,6 +215,7 @@ def generator(p):
            return alph
     return 0
 
+#Find all prime factors of n
 def prime_factors(n):
     print('gathering prime factors...')
     i = 2
@@ -268,44 +230,6 @@ def prime_factors(n):
         print('found factor ' + str(i))
         prime_factors_global.append(n)
         
-
-#Returns a random prime number
-def get_random_prime():
-    random_generator = Crypto.Random.new().read
-    return Crypto.Util.number.getPrime(1024, random_generator)
-
-
-def gather_prime_factors(m):
-    #factors = []
-    b = 500
-    d = -1
-    while d < 0:
-        d = polar_alg(m, b)
-        if ((d == m) or (d == 1)):
-            break
-        if ((d < 1) or (d > m)):
-            b = b + 1
-    c = m / d
-    check(d)
-    check(c)
-
-
-def check(n):
-    if (RabinMiller(n)):
-        prime_factors_global.append(n)
-        print('found factor ' + str(n))
-    elif n != 1:
-        gather_prime_factors(n)
-    
-def polar_alg(m, b):
-    a = 2
-    for j in xrange(2, b):
-        a = (a**j) % m
-    print('a = ' + str(a))
-    d = fractions.gcd(a - 1, m) #gcd(a - 1, m)
-    print('gcd = ' + str(d))
-    return d
-
 
 if __name__ == '__main__':
     main(sys.argv[1:])
