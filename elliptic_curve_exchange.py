@@ -41,22 +41,27 @@ def start_server(port, pSize):
                 if RabinMiller(p):
                     print('Found prime ' + str(p))
                     break
-            a, b = build_curve(10)
+            #a, b = build_curve(10)
+            a = 5
+            b = 8
             print('Using curve y^2 = x^3 + ' + str(a) + 'x + ' + str(b))
             # find an alpha that is in the curve
-            alphX = random.randrange(-20, 20)
-            alphY = 0
-            while True:
-                z = get_z(alphX, a, b, p)
-                if z != -1:
-                    alphY = int(math.sqrt(z))
-                    break
-                else:
-                    alphX = alphX + 1;
+            #alphX = random.randrange(-20, 20)
+            #alphY = 0
+            #while True:
+            #    z = get_z(alphX, a, b, p)
+            #    if z != -1:
+            #        alphY = int(math.sqrt(z))
+            #        break
+            #    else:
+            #        alphX = alphX + 1;
+            alphX = -6
+            alphY = 206
             print('Chose alpha = (' + str(alphX) + ', ' + str(alphY) + ')')
             privKey = random.randrange(1, 20)
             print('Private key is ' + str(privKey))
-            aux_base = random.randrange(1, 20)
+            #aux_base = random.randrange(1, 20)
+            aux_base = 17
             print('Auxilary base is ' + str(aux_base))
             betaX, betaY = curve_dot(alphX, alphY, a, privKey, p)
             print('Beta = (' + str(betaX) + ', ' + str(betaY) + ')')
