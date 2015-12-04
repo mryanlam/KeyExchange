@@ -105,9 +105,9 @@ def connect_to_server(ip, port, keySize):
     #get (p, alpha, beta)
     # download json from server and unpack it
     public_key = json.loads(json_pub_key)
-    k = random.randrange(1, 10) 
+    k = random.randrange(1000000000000000, 9999999999999999) 
     # change AES key size
-    AESkey = randomBytes(keySize)
+    AESkey = random.randrange(1, 10)
     
     y2_list = []
     for digit in str(AESkey):
