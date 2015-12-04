@@ -84,10 +84,12 @@ def start_server(port, pSize):
             print('y2 is ' + str(aes_key['y2']))
             print('key is ' + str(AESkey))
             
-            cipher = AES.new(AESkey) # check formating
+            cipher = AES.new(str(AESkey)) # check formating
             msg = connection.recv(64)
             msg = cipher.decrypt(msg)
             print('Final Message : ' + msg)
+            msg = cipher.encrypt('This is the response')
+            connection.send(msg)
             break
      
 
@@ -119,9 +121,12 @@ def connect_to_server(ip, port, keySize):
     clientsocket.send(json.dumps(AES_message))
     print('key is ' + str(AESkey))
     
-    cipher = AES.new(AESkey) # check formating
+    cipher = AES.new(str(AESkey)) # check formating
     msg = cipher.encrypt('It\'s a secret to everybody')
     clientsocket.send(msg)
+    msg = clientsocket.recv(64)
+    msg = cipher.decrypt(msg)
+    print('Response : ' + msg)
 
 # p = prime number, alph = generator
 def buildkey(alph, a, p):
