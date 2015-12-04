@@ -198,7 +198,7 @@ def generator(p):
         alph = random.randrange(1, p)
         print('Testing genrator ' + str(alph))
         found = True   
-        for a in factors:
+        for a in prime_factors_global:
             print('Testing ' + str(a))
             # make sure int?
             exp = k / a
