@@ -113,7 +113,7 @@ def curve_dot(x, y, a, q, p):
 def curve_add(px, py, qx, qy, p):
     lam = qy - py
     lam /= qx - px
-    lam = lam
+    lam = lam % p
     x_r = x_r = (lam ** 2)
     x_r -= (px + qx)
     x_r = x_r % p
@@ -125,7 +125,7 @@ def curve_add(px, py, qx, qy, p):
 # https://en.wikipedia.org/wiki/Elliptic_curve_point_multiplication#Point_doubling
 def calc_lambda(x, y, a, p):
     top = 3 * (x ** 2) + a
-    return (top / (2 * y))
+    return (top / (2 * y)) % p
 
 def connect_to_server(ip, port):
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
