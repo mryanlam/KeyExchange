@@ -43,19 +43,24 @@ def start_server(port, pSize):
                     print('Found prime ' + str(p))
                     break
             a, b = build_curve()
+            print('Using curve y^2 = x^3 + ' + str(a) + 'x + ' + str(b))
             # find an alpha that is in the curve, may need to modify to use koblitz
-            alphX = 0
+            alphX = generator(p)
             alphY = 0
             while true:
-                alph = generator(p)
-                z = get_z(alph, a, b, p)
+                z = get_z(alphX, a, b, p)
                 if z != -1:
-                    alphX = alph
                     alphY = math.sqrt(z)
                     break
+                else:
+                    alphX++;
+            print('Chose alpha = (' + str(alphX) + ', ' + str(alphY) + ')')
             privKey = random.randrange(1, p - 1)
-            aux_base = random.randrange(1, p - 1)
+            print('Private key is ' + str(privKey)
+            aux_base = random.randrange(1, 20)
+            print('Auxilary base is ' + str(aux_base)
             betaX, betaY = curve_dot(alphX, alphY, a, privKey)
+            print('Beta = (' + str(betaX) + ', ' + str(betaY) + ')')
             public_key = dict()
             public_key['alphX'] = alphX
             public_key['alphY'] = alphY
@@ -70,7 +75,7 @@ def start_server(port, pSize):
             json_aes_key = connection.recv(128)
             aes_key = json.loads(json_aes_key)
             AESkey = decrypt(aes_key['y1X'], aes_key['y1Y'], aes_key['coords'], a, privKey, aux_base)
-            print('key is ' + AESkey)
+            print('Key is ' + str(AESkey))
             #DECRYPT KEY
             break
 
@@ -83,7 +88,7 @@ def decrypt(y1X, y1Y, coords, a, privKey, aux_base):
         #check if still int
         m = (x - 1) / aux_base
         key = key + str(m)
-    return key
+    return int(key)
         
 def curve_dot(x, y, a, q):
     # q(x,y)
@@ -122,6 +127,7 @@ def connect_to_server(ip, port, keySize):
     y2X, y1Y = curve_dot(public_key['betaX'], public_key['betaY'], k)
     AESkey = random.getrandbits(keySize)
     str_AESkey = str(AESkey)
+    print('Key = ' + str_AESkey)
     #koblitz each character
     encoded_AESkey = [] # List of dicts that have x and y as keys
     for char in str_AESkey:
@@ -151,8 +157,7 @@ def get_z(x, a, b, p):
     z = (x**3) + (a*x) + b
     z = z % p
     z1 = z**((p-1)/2)
-    z2 = (z/p) % p
-    if (z1 == z2):
+    if (z1 == 1):
         return z
     else:
         return -1
