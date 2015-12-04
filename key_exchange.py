@@ -16,7 +16,7 @@ def main(args):
     parse.add_argument('-i', '--ip', type = str)
     parse.add_argument('-p', '--port', type = int, required = True)
     parse.add_argument('-size', '--pSize', type = int, default = 16)
-    parse.add_argument('-k', '--keySize', type = int, default = 8)
+    parse.add_argument('-k', '--keySize', type = int, default = 16)
     
     args = parse.parse_args()
     isServer = args.isServer
@@ -105,7 +105,7 @@ def connect_to_server(ip, port, keySize):
     public_key = json.loads(json_pub_key)
     k = random.randrange(1, public_key['p'] - 1)
     # change AES key size
-    AESkey = random.getrandbits(keySize)
+    AESkey = random.getrandbits(keySize) % p
     y1 = gety1(public_key['p'], public_key['alph'], k)
     y2 = gety2(public_key['p'], public_key['beta'], k, AESkey)
     AES_message = dict()
