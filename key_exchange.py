@@ -108,6 +108,7 @@ def connect_to_server(ip, port, keySize):
     k = random.randrange(1, 10) 
     # change AES key size
     AESkey = randomBytes(keySize)
+    
     y2_list = []
     for digit in str(AESkey):
         y2_list.append(gety2(public_key['p'], public_key['beta'], k, int(digit)))
@@ -123,7 +124,7 @@ def connect_to_server(ip, port, keySize):
     #send encrypted key to p1
     clientsocket.send(json.dumps(AES_message))
     print('key is ' + str(AESkey))
-    
+    print sys.getsizeof(AESkey)
     cipher = AES.new(str(AESkey)) # check formating
     msg = cipher.encrypt('It\'s a secret to everybody')
     clientsocket.send(msg)
