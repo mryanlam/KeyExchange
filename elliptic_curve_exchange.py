@@ -132,7 +132,6 @@ def connect_to_server(ip, port):
     k = random.randrange(1, public_key['p'] - 1)
     y1X, y1Y = curve_dot(public_key['alphX'], public_key['alphY'], public_key['a'], k)
     y2X, y1Y = curve_dot(public_key['betaX'], public_key['betaY'], public_key['a'] , k)
-    AESkey = random.getrandbits(keySize)
     AESkey = random.randrange(1000000000000000, 9999999999999999)
     print('Key = ' + str_AESkey)
     #koblitz each character
