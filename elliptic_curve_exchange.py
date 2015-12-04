@@ -113,9 +113,9 @@ def curve_add(px, py, qx, qy):
     lam = qy - py
     lam /= qx - px
     x_r = x_r = (lam ** 2)
-    x_r -= 2 * x
-    y_r = lam * (x_r - x)
-    y_r -= y
+    x_r -= (px + qx)
+    y_r = lam * (px - x_r)
+    y_r -= py
     return x_r, y_r
         
 # https://en.wikipedia.org/wiki/Elliptic_curve_point_multiplication#Point_doubling
