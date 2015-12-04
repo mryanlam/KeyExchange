@@ -133,6 +133,7 @@ def connect_to_server(ip, port):
     y1X, y1Y = curve_dot(public_key['alphX'], public_key['alphY'], public_key['a'], k)
     y2X, y1Y = curve_dot(public_key['betaX'], public_key['betaY'], public_key['a'] , k)
     AESkey = random.randrange(1000000000000000, 9999999999999999)
+    str_AESkey = str(AESkey)
     print('Key = ' + str_AESkey)
     #koblitz each character
     encoded_AESkey = [] # List of dicts that have x and y as keys
@@ -148,7 +149,7 @@ def connect_to_server(ip, port):
     AES_message['coords'] = coords
     clientsocket.send(json.dumps(AES_message))
     
-    cipher = AES.new(str(AESkey))
+    cipher = AES.new(str_AESkey)
     msg = cipher.encrypt('1111111111111111')
     clientsocket.send(msg)
     msg = clientsocket.recv(64)
