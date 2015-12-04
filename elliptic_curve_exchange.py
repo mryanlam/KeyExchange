@@ -188,24 +188,46 @@ def build_curve(p):
 #Find Generator
 def generator(p):
     k = p -1
-    factors = []
-    #factors = gather_prime_factors(k, factors)
-    factors = prime_factors(k)
+    #gather_prime_factors(k)
+    prime_factors(k)
     while True:
-        alph = random.randrange(1, p)
+        alph = random.randrange(1, 10)
         print('Testing genrator ' + str(alph))
         found = True   
-        for a in factors:
+        for a in prime_factors_global:
             print('Testing ' + str(a))
             # make sure int?
             exp = k / a
-            test = alph**exp
-            if (exp % p) == 1:
+            print('exp = ' + str(exp))
+            #test = alph ** exp
+            test = 0
+            test = alph
+            for i in xrange(exp):
+                test = (test * alph) % p
+            if (test) == 1:
                 found = False
+                print('non-generator')
                 break
         if found:
+           print('Generator found')
            return alph
     return 0
+
+#Find all prime factors of n
+def prime_factors(n):
+    print('gathering prime factors...')
+    i = 2
+    while i * i <= n:
+        if n % i:
+            i += 1
+        else:
+            n //= i
+            prime_factors_global.append(i)
+            print('found factor ' + str(i))
+    if n > 1:
+        print('found factor ' + str(i))
+        prime_factors_global.append(n)
+        
 
 def RabinMiller(n, k = 7):
     if n < 6: 
@@ -230,19 +252,6 @@ def RabinMiller(n, k = 7):
                     return False  
     return True
     
-def prime_factors(n):
-    print('gathering prime factors...')
-    i = 2
-    while i * i <= n:
-        if n % i:
-            i += 1
-        else:
-            n //= i
-            prime_factors_global.append(i)
-            print('found factor ' + str(i))
-    if n > 1:
-        print('found factor ' + str(i))
-        prime_factors_global.append(n)
     
 if __name__ == '__main__':
     main(sys.argv[1:])
