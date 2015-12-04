@@ -21,7 +21,6 @@ def main(args):
     ip = args.ip
     port = args.port
     pSize = args.pSize
-    keySize = args.keySize
     if isServer == 0:
         start_server(port, pSize)
     else:
