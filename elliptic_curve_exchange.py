@@ -142,11 +142,10 @@ def connect_to_server(ip, port):
         coords = dict()
         coords['x'], coords['y'] = curve_add(x, y, y2X, y2Y)
         encoded_AESkey.append(coords)
-    json_encoded_AES = json.loads(encoded_AESkey)
     AES_message = dict()
     AES_message['y1X'] = y1X
     AES_message['y1Y'] = y1Y
-    AES_message['coords'] = coords
+    AES_message['coords'] = encoded_AESkey
     clientsocket.send(json.dumps(AES_message))
     
     cipher = AES.new(str_AESkey)
