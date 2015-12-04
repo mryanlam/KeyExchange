@@ -158,7 +158,7 @@ def connect_to_server(ip, port):
     
 def koblitz(a, b, p, m, k):
     i = 1
-    while true:
+    while True:
         x = m*k + i
         z = get_z(x, a, b, p)
         if (z != -i):
