@@ -16,20 +16,18 @@ def main(args):
     parse.add_argument('-i', '--ip', type = str)
     parse.add_argument('-p', '--port', type = int, required = True)
     parse.add_argument('-size', '--pSize', type = int, default = 16)
-    parse.add_argument('-k', '--keySize', type = int, default = 16)
     
     args = parse.parse_args()
     isServer = args.isServer
     ip = args.ip
     port = args.port
     pSize = args.pSize
-    keySize = args.keySize
    
     if isServer == 0:
         start_server(port, pSize)
 
     else:
-        connect_to_server(ip, port, keySize)
+        connect_to_server(ip, port)
         
 
 # Listen for a connection (Server)
@@ -85,7 +83,7 @@ def start_server(port, pSize):
      
 
 # Connect to a server (Client)
-def connect_to_server(ip, port, keySize):
+def connect_to_server(ip, port):
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     clientsocket.connect((ip, port))
     clientsocket.send('hello')

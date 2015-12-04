@@ -14,8 +14,7 @@ def main(args):
     parse.add_argument('-s', '--isServer', type = int)
     parse.add_argument('-i', '--ip', type = str)
     parse.add_argument('-p', '--port', type = int, required = True)
-    parse.add_argument('-size', '--pSize', type = int, default = 64)
-    parse.add_argument('-k', '--keySize', type = int, default = 32)
+    parse.add_argument('-size', '--pSize', type = int, default = 16)
     
     args = parse.parse_args()
     isServer = args.isServer
@@ -26,7 +25,7 @@ def main(args):
     if isServer == 0:
         start_server(port, pSize)
     else:
-        connect_to_server(ip, port, keySize)
+        connect_to_server(ip, port)
 
 def start_server(port, pSize):
     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -124,7 +123,7 @@ def calc_lambda(x, y, a):
     top = 3 * (x ** 2) + a
     return top / (2 * y)
 
-def connect_to_server(ip, port, keySize):
+def connect_to_server(ip, port):
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     clientsocket.connect((ip, port))
     clientsocket.send('hello')
