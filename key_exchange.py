@@ -89,7 +89,7 @@ def start_server(port, pSize):
             cipher = AES.new(str(AESkey)) # check formating
             msg = connection.recv(64)
             msg = cipher.decrypt(msg)
-            print('Final Message : ' + depadMsg(msg))
+            print('Final Message : ' + depaddMsg(msg))
             msg = cipher.encrypt(paddMsg('This is the response'))
             connection.send(msg)
             break
