@@ -73,7 +73,7 @@ def start_server(port, pSize):
             connection.send(json_pub_key)
             json_aes_key = connection.recv(999999999)
             aes_key = json.loads(json_aes_key)
-            AESkey = decrypt(aes_key['y1X'], aes_key['y1Y'], aes_key['coords'], a, privKey, aux_base), p
+            AESkey = decrypt(aes_key['y1X'], aes_key['y1Y'], aes_key['coords'], a, privKey, aux_base, p)
             
             print('Key is ' + str(AESkey))
             cipher = AES.new(str(AESkey))
