@@ -89,8 +89,8 @@ def start_server(port, pSize):
             cipher = AES.new(str(AESkey)) # check formating
             msg = connection.recv(64)
             msg = cipher.decrypt(msg)
-            print('Final Message : ' + msg)
-            msg = cipher.encrypt('This is the response')
+            print('Final Message : ' + depadMsg(msg))
+            msg = cipher.encrypt(paddMsg('This is the response'))
             connection.send(msg)
             break
      
@@ -126,11 +126,26 @@ def connect_to_server(ip, port, keySize):
     print('key is ' + str(AESkey))
     print sys.getsizeof(AESkey)
     cipher = AES.new(str(AESkey)) # check formating
-    msg = cipher.encrypt('It\'s a secret to everybody')
+    msg = cipher.encrypt(paddMsg('It\'s a secret to everybody'))
     clientsocket.send(msg)
     msg = clientsocket.recv(64)
     msg = cipher.decrypt(msg)
-    print('Response : ' + msg)
+    print('Response : ' + depaddMsg(msg))
+
+def paddMsg(msg):
+    padding = len(msg) % 16
+    for i in xrange(0, padding):
+        msg = msg + '$'
+    return msg
+
+def depaddMsg(msg):
+    for i in xrange(0, len(msg)):
+        if msg[i] == '$':
+            msg = msg[:20]
+            break
+    return msg
+        
+        
 
 def randomBytes(n):
     bytes = ""
