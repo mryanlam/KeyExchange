@@ -94,7 +94,7 @@ def decrypt(y1X, y1Y, coords, a, privKey, aux_base):
         x, y = curve_add(point['x'], point['y'], x, y)
         #check if still int
         m = (x - 1) / aux_base
-        key = key + str(m)
+        key = key + str(int(m))
     return int(key)
         
 def curve_dot(x, y, a, q):
