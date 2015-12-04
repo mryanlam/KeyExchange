@@ -140,7 +140,7 @@ def connect_to_server(ip, port):
         x, y = koblitz(public_key['a'], public_key['b'], public_key['p'], int(char), public_key['aux_base'])
         coords = dict()
         coords['x'], coords['y'] = curve_add(x, y, y2X, y2Y)
-        print(str(coords['x']) + ' ' + coords['y'])
+        print(str(coords['x']) + ' ' + str(coords['y']))
         encoded_AESkey.append(coords)
     AES_message = dict()
     AES_message['y1X'] = y1X
