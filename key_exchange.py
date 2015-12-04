@@ -240,8 +240,12 @@ def generator(p):
             # make sure int?
             exp = k / a
             print('exp = ' + str(exp))
-            test = alph**exp
-            if (test % p) == 1:
+            #test = alph ** exp
+            test = 0
+            test = alph
+            for i in xrange(exp):
+                test = (test * alph) % p
+            if (test) == 1:
                 found = False
                 print('non-generator')
                 break
