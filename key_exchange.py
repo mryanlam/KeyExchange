@@ -132,7 +132,10 @@ def connect_to_server(ip, port, keySize):
     print('Response : ' + msg)
 
 def randomBytes(n):
-    return bytearray(random.getrandbits(8) for i in range(n))
+    bytes = ""
+    for i in range(n):
+        bytes += str(random.getrandbits(8))
+    return bytes
     
 # p = prime number, alph = generator
 def buildkey(alph, a, p):
