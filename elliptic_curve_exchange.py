@@ -93,6 +93,7 @@ def decrypt(y1X, y1Y, coords, a, privKey, aux_base, p):
         x, y = curve_add(point['x'], point['y'], ax, -ay, p)
         #check if still int
         m = (x - 1) / aux_base
+        print(str(m))
         key = key + str(int(m))
     return int(key)
         
@@ -111,13 +112,13 @@ def curve_dot(x, y, a, q, p):
 def curve_add(px, py, qx, qy, p):
     lam = qy - py
     lam /= qx - px
-    lam %= p
+    lam = lam
     x_r = x_r = (lam ** 2)
     x_r -= (px + qx)
-    x_r %= p
+    x_r = x_r % p
     y_r = lam * (px - x_r)
     y_r -= py
-    y_r %= p
+    y_r = y_r % p
     return x_r, y_r
         
 # https://en.wikipedia.org/wiki/Elliptic_curve_point_multiplication#Point_doubling
