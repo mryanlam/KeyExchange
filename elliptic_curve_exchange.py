@@ -92,6 +92,7 @@ def decrypt(y1X, y1Y, coords, a, privKey, aux_base, p):
         #need inverse of y1
         x, y = curve_add(point['x'], point['y'], ax, -ay, p)
         #check if still int
+        x = x - 9
         print('x = ' + str(x))
         m = (x - 1) / aux_base
         print(str(m))
