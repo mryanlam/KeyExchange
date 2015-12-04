@@ -1,6 +1,6 @@
 import os
 import sys
-import Crypto # https://www.dlitz.net/software/pycrypto/
+from Crypto.Cipher import AES # https://www.dlitz.net/software/pycrypto/
 import socket
 import argparse
 import json
@@ -15,8 +15,8 @@ def main(args):
     parse.add_argument('-s', '--isServer', type = int)
     parse.add_argument('-i', '--ip', type = str)
     parse.add_argument('-p', '--port', type = int, required = True)
-    parse.add_argument('-size', '--pSize', type = int, default = 64)
-    parse.add_argument('-k', '--keySize', type = int, default = 32)
+    parse.add_argument('-size', '--pSize', type = int, default = 16)
+    parse.add_argument('-k', '--keySize', type = int, default = 8)
     
     args = parse.parse_args()
     isServer = args.isServer
@@ -195,18 +195,21 @@ def generator(p):
     #gather_prime_factors(k)
     prime_factors(k)
     while True:
-        alph = random.randrange(1, p)
+        alph = random.randrange(1, 10)
         print('Testing genrator ' + str(alph))
         found = True   
         for a in prime_factors_global:
             print('Testing ' + str(a))
             # make sure int?
             exp = k / a
+            print('exp = ' + str(exp))
             test = alph**exp
-            if (exp % p) == 1:
+            if (test % p) == 1:
                 found = False
+                print('non-generator')
                 break
         if found:
+           print('Generator found')
            return alph
     return 0
 
