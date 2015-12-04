@@ -134,12 +134,12 @@ def connect_to_server(ip, port, keySize):
 
 def paddMsg(msg):
     padding = len(msg) % 16
-    for i in xrange(0, padding):
+    for i in xrange(padding):
         msg = msg + '$'
     return msg
 
 def depaddMsg(msg):
-    for i in xrange(0, len(msg)):
+    for i in xrange(len(msg)):
         if msg[i] == '$':
             msg = msg[:20]
             break
