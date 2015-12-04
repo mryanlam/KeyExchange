@@ -75,7 +75,10 @@ def start_server(port, pSize):
             json_aes_key = connection.recv(128)
             aes_key = json.loads(json_aes_key)
             #get encrypted aes key as aes_key
-            AESkey = decrypt(aes_key['y1'], aes_key['y2'], p, alph, beta, a)
+            aes_key_list = []
+            for digit in aes_key['y2']:
+                aes_key_list.append(decrypt(aes_key['y1'], digit, p, alph, beta, a))
+            AESkey = "".join([str(x) for x in aes_key_list])
             print('p is ' + str(p))
             print('alph is ' + str(alph))
             print('beta is ' + str(beta))
@@ -105,12 +108,15 @@ def connect_to_server(ip, port, keySize):
     public_key = json.loads(json_pub_key)
     k = random.randrange(1, public_key['p'] - 1)
     # change AES key size
-    AESkey = random.getrandbits(keySize) % public_key['p']
+    AESkey = random.getrandbits(keySize)
+    str(AESkey)
+    y2_list = []
+    for digit in AESkey:
+        y2_list.append(gety2(public_key['p'], public_key['beta'], k, digit))
     y1 = gety1(public_key['p'], public_key['alph'], k)
-    y2 = gety2(public_key['p'], public_key['beta'], k, AESkey)
     AES_message = dict()
     AES_message['y1'] = y1
-    AES_message['y2'] = y2
+    AES_message['y2'] = y2_list
     print('p is ' + str(public_key['p']))
     print('alph is ' + str(public_key['alph']))
     print('beta is ' + str(public_key['beta']))
