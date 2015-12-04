@@ -92,6 +92,7 @@ def decrypt(y1X, y1Y, coords, a, privKey, aux_base, p):
         #need inverse of y1
         x, y = curve_add(point['x'], point['y'], ax, -ay, p)
         #check if still int
+        print('x = ' + str(x))
         m = (x - 1) / aux_base
         print(str(m))
         key = key + str(int(m))
@@ -105,8 +106,8 @@ def curve_dot(x, y, a, q, p):
         x_r -= 2 * x
         y_r = lam * (x - x_r)
         y_r -= y
-        x = x_r
-        y = y_r
+        x = x_r % p
+        y = y_r % p
     return x, y
 
 def curve_add(px, py, qx, qy, p):
@@ -115,10 +116,10 @@ def curve_add(px, py, qx, qy, p):
     lam = lam
     x_r = x_r = (lam ** 2)
     x_r -= (px + qx)
-    x_r = x_r
+    x_r = x_r % p
     y_r = lam * (px - x_r)
     y_r -= py
-    y_r = y_r
+    y_r = y_r % p
     return x_r, y_r
         
 # https://en.wikipedia.org/wiki/Elliptic_curve_point_multiplication#Point_doubling
@@ -142,6 +143,7 @@ def connect_to_server(ip, port):
     encoded_AESkey = [] # List of dicts that have x and y as keys
     for char in str_AESkey:
         x, y = koblitz(public_key['a'], public_key['b'], public_key['p'], int(char), public_key['aux_base'])
+        print('x = ' + str(x))
         coords = dict()
         coords['x'], coords['y'] = curve_add(x, y, y2X, y2Y, public_key['p'])
         print(str(coords['x']) + ' ' + str(coords['y']))
