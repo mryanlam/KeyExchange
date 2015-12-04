@@ -58,7 +58,7 @@ def start_server(port, pSize):
             print('Private key is ' + str(privKey))
             aux_base = random.randrange(1, 20)
             print('Auxilary base is ' + str(aux_base))
-            betaX, betaY = curve_dot(alphX, alphY, a, privKey)
+            betaX, betaY = curve_dot(alphX, alphY, a, privKey, p)
             print('Beta = (' + str(betaX) + ', ' + str(betaY) + ')')
             public_key = dict()
             public_key['alphX'] = alphX
@@ -73,7 +73,7 @@ def start_server(port, pSize):
             connection.send(json_pub_key)
             json_aes_key = connection.recv(999999999)
             aes_key = json.loads(json_aes_key)
-            AESkey = decrypt(aes_key['y1X'], aes_key['y1Y'], aes_key['coords'], a, privKey, aux_base)
+            AESkey = decrypt(aes_key['y1X'], aes_key['y1Y'], aes_key['coords'], a, privKey, aux_base), p
             
             print('Key is ' + str(AESkey))
             cipher = AES.new(str(AESkey))
@@ -84,19 +84,19 @@ def start_server(port, pSize):
             connection.send(msg)
             break
 
-def decrypt(y1X, y1Y, coords, a, privKey, aux_base):
+def decrypt(y1X, y1Y, coords, a, privKey, aux_base, p):
     key = ''
     for point in coords:
         print(str(point['x']) + ' ' + str(point['y']))
-        ax, ay = curve_dot(y1X, y1Y, a, privKey)
-        #need inverse of y1?
-        x, y = curve_add(point['x'], point['y'], ax, ay)
+        ax, ay = curve_dot(y1X, y1Y, a, privKey, p)
+        #need inverse of y1
+        x, y = curve_add(point['x'], point['y'], ax, -ay, p)
         #check if still int
         m = (x - 1) / aux_base
         key = key + str(int(m))
     return int(key)
         
-def curve_dot(x, y, a, q):
+def curve_dot(x, y, a, q, p):
     # q(x,y)
     for i in xrange(q):
         lam = calc_lambda(x,y,a)
@@ -104,23 +104,26 @@ def curve_dot(x, y, a, q):
         x_r -= 2 * x
         y_r = lam * (x - x_r)
         y_r -= y
-        x = x_r
-        y = y_r
+        x = x_r % p
+        y = y_r % p
     return x, y
 
-def curve_add(px, py, qx, qy):
+def curve_add(px, py, qx, qy, p):
     lam = qy - py
     lam /= qx - px
+    lam %= p
     x_r = x_r = (lam ** 2)
     x_r -= (px + qx)
+    x_r %= p
     y_r = lam * (px - x_r)
     y_r -= py
+    y_r %= p
     return x_r, y_r
         
 # https://en.wikipedia.org/wiki/Elliptic_curve_point_multiplication#Point_doubling
-def calc_lambda(x, y, a):
+def calc_lambda(x, y, a, p):
     top = 3 * (x ** 2) + a
-    return top / (2 * y)
+    return (top / (2 * y)) % p
 
 def connect_to_server(ip, port):
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -129,8 +132,8 @@ def connect_to_server(ip, port):
     json_pub_key = clientsocket.recv(256)
     public_key = json.loads(json_pub_key)
     k = random.randrange(1, 20)
-    y1X, y1Y = curve_dot(public_key['alphX'], public_key['alphY'], public_key['a'], k)
-    y2X, y2Y = curve_dot(public_key['betaX'], public_key['betaY'], public_key['a'] , k)
+    y1X, y1Y = curve_dot(public_key['alphX'], public_key['alphY'], public_key['a'], k, public_key['p'])
+    y2X, y2Y = curve_dot(public_key['betaX'], public_key['betaY'], public_key['a'] , k, public_key['p'])
     AESkey = random.randrange(1000000000000000, 9999999999999999)
     str_AESkey = str(AESkey)
     print('Key = ' + str_AESkey)
@@ -139,7 +142,7 @@ def connect_to_server(ip, port):
     for char in str_AESkey:
         x, y = koblitz(public_key['a'], public_key['b'], public_key['p'], int(char), public_key['aux_base'])
         coords = dict()
-        coords['x'], coords['y'] = curve_add(x, y, y2X, y2Y)
+        coords['x'], coords['y'] = curve_add(x, y, y2X, y2Y, public_key['p'])
         print(str(coords['x']) + ' ' + str(coords['y']))
         encoded_AESkey.append(coords)
     AES_message = dict()
