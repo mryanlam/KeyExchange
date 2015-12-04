@@ -80,14 +80,14 @@ def start_server(port, pSize):
             msg = connection.recv(128)
             msg = cipher.decrypt(msg)
             print('Final Message : ' + msg)
-            msg = cipher.encrypt('1111111111111111')
+            print sys.getsizeof(msg)
+            msg = cipher.encrypt('2222222222222222')
             connection.send(msg)
             break
 
 def decrypt(y1X, y1Y, coords, a, privKey, aux_base, p):
     key = ''
     for point in coords:
-        print(str(point['x']) + ' ' + str(point['y']))
         ax, ay = curve_dot(y1X, y1Y, a, privKey, p)
         #need inverse of y1
         x, y = curve_add(point['x'], point['y'], ax, -ay, p)
@@ -143,7 +143,6 @@ def connect_to_server(ip, port):
         x, y = koblitz(public_key['a'], public_key['b'], public_key['p'], int(char), public_key['aux_base'])
         coords = dict()
         coords['x'], coords['y'] = curve_add(x, y, y2X, y2Y, public_key['p'])
-        print(str(coords['x']) + ' ' + str(coords['y']))
         encoded_AESkey.append(coords)
     AES_message = dict()
     AES_message['y1X'] = y1X
