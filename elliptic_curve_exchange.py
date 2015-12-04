@@ -73,7 +73,7 @@ def start_server(port, pSize):
             public_key['aux_base'] = aux_base
             json_pub_key = json.dumps(public_key)
             connection.send(json_pub_key)
-            json_aes_key = connection.recv(128)
+            json_aes_key = connection.recv(999999999999)
             aes_key = json.loads(json_aes_key)
             AESkey = decrypt(aes_key['y1X'], aes_key['y1Y'], aes_key['coords'], a, privKey, aux_base)
             
@@ -81,7 +81,7 @@ def start_server(port, pSize):
             cipher = AES.new(str(AESkey)) # check formating
             msg = connection.recv(128)
             msg = cipher.decrypt(msg)
-            print('Final Message : ' + depaddMsg(msg))
+            print('Final Message : ' + msg)
             msg = cipher.encrypt('1111111111111111')
             connection.send(msg)
             break
@@ -98,7 +98,7 @@ def decrypt(y1X, y1Y, coords, a, privKey, aux_base):
     return int(key)
         
 def curve_dot(x, y, a, q):
-    # q(x,y)
+    # q(x,y)256
     for i in xrange(q):
         lam = calc_lambda(x,y,a)
         x_r = (lam ** 2)
@@ -153,7 +153,7 @@ def connect_to_server(ip, port):
     clientsocket.send(msg)
     msg = clientsocket.recv(128)
     msg = cipher.decrypt(msg)
-    print('Response : ' + depaddMsg(msg))
+    print('Response : ' + msg)
     
 def koblitz(a, b, p, m, k):
     i = 1
