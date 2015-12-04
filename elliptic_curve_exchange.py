@@ -90,9 +90,8 @@ def decrypt(y1X, y1Y, coords, a, privKey, aux_base, p):
         print(str(point['x']) + ' ' + str(point['y']))
         ax, ay = curve_dot(y1X, y1Y, a, privKey, p)
         #need inverse of y1
-        x, y = curve_add(point['x'], point['y'], ax, -ay, p)
+        x, y = curve_add(point['x'], -1 * point['y'], ax, ay, p)
         #check if still int
-        x = x - 9
         print('x = ' + str(x))
         m = (x - 1) / aux_base
         print(str(m))
@@ -115,8 +114,9 @@ def curve_add(px, py, qx, qy, p):
     lam = qy - py
     lam /= qx - px
     lam = lam % p
-    x_r = x_r = (lam ** 2)
-    x_r -= (px + qx)
+    x_r = (lam ** 2)
+    x_r -= px
+    x_r -= qx
     x_r = x_r % p
     y_r = lam * (px - x_r)
     y_r -= py
