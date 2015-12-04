@@ -91,7 +91,7 @@ def decrypt(y1X, y1Y, coords, a, privKey, aux_base):
     for point in coords:
         x, y = curve_dot(y1X, y1Y, a, privKey)
         #need inverse of y1?
-        x, y = curve_add(point['x'], point['y'], x, y)
+        x, y = curve_add(point['x'], point['y'], -x, -y)
         #check if still int
         m = (x - 1) / aux_base
         key = key + str(int(m))
