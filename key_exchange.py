@@ -126,7 +126,9 @@ def connect_to_server(ip, port, keySize):
     print('key is ' + str(AESkey))
     print sys.getsizeof(AESkey)
     cipher = AES.new(str(AESkey)) # check formating
-    msg = cipher.encrypt(paddMsg('It\'s a secret to everybody'))
+    msg = paddMsg('It\'s a secret to everybody')
+    print sys.getsizeof(AESkey)
+    msg = cipher.encrypt(msg)
     clientsocket.send(msg)
     msg = clientsocket.recv(64)
     msg = cipher.decrypt(msg)
