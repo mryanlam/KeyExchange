@@ -6,6 +6,7 @@ import argparse
 import random
 import json
 import math
+from __future__ import division
 
 prime_factors_global = []
 
