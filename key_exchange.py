@@ -105,7 +105,7 @@ def connect_to_server(ip, port, keySize):
     public_key = json.loads(json_pub_key)
     k = random.randrange(1, public_key['p'] - 1)
     # change AES key size
-    AESkey = random.getrandbits(keySize) % p
+    AESkey = random.getrandbits(keySize) % public_key['p']
     y1 = gety1(public_key['p'], public_key['alph'], k)
     y2 = gety2(public_key['p'], public_key['beta'], k, AESkey)
     AES_message = dict()
