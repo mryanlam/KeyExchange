@@ -99,7 +99,7 @@ def decrypt(y1X, y1Y, coords, a, privKey, aux_base, p):
 def curve_dot(x, y, a, q, p):
     # q(x,y)
     for i in xrange(q):
-        lam = calc_lambda(x,y,a)
+        lam = calc_lambda(x,y,a, p)
         x_r = (lam ** 2)
         x_r -= 2 * x
         y_r = lam * (x - x_r)
