@@ -56,7 +56,7 @@ def start_server(port, pSize):
             print('Chose alpha = (' + str(alphX) + ', ' + str(alphY) + ')')
             privKey = random.randrange(1, 20)
             print('Private key is ' + str(privKey))
-            aux_base = random.randrange(2, 20)
+            aux_base = random.randrange(1, 20)
             print('Auxilary base is ' + str(aux_base))
             betaX, betaY = curve_dot(alphX, alphY, a, privKey, p)
             print('Beta = (' + str(betaX) + ', ' + str(betaY) + ')')
