@@ -138,7 +138,7 @@ def connect_to_server(ip, port):
     #koblitz each character
     encoded_AESkey = [] # List of dicts that have x and y as keys
     for char in str_AESkey:
-        x, y = koblitz(public_key['a'], public_key['b'], public_key['p'], char, public_key['aux_base'])
+        x, y = koblitz(public_key['a'], public_key['b'], public_key['p'], int(char), public_key['aux_base'])
         coords = dict()
         coords['x'], coords['y'] = curve_add(x, y, y2X, y2Y)
         encoded_AESkey.append(coords)
@@ -159,7 +159,7 @@ def connect_to_server(ip, port):
 def koblitz(a, b, p, m, k):
     i = 1
     while True:
-        x = m*k + i
+        x = m * k + i
         z = get_z(x, a, b, p)
         if (z != -i):
             return (x, math.sqrt(z))
