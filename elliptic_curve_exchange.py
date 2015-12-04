@@ -160,7 +160,7 @@ def koblitz(a, b, p, m, k):
         x = m * k + i
         z = get_z(x, a, b, p)
         if (z != -1):
-            return (x, math.sqrt(z))
+            return (x, int(math.sqrt(z)))
         else:
             i = i + 1
  
