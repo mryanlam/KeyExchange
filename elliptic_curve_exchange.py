@@ -105,8 +105,8 @@ def curve_dot(x, y, a, q, p):
         x_r -= 2 * x
         y_r = lam * (x - x_r)
         y_r -= y
-        x = x_r % p
-        y = y_r % p
+        x = x_r
+        y = y_r
     return x, y
 
 def curve_add(px, py, qx, qy, p):
@@ -115,10 +115,10 @@ def curve_add(px, py, qx, qy, p):
     lam = lam
     x_r = x_r = (lam ** 2)
     x_r -= (px + qx)
-    x_r = x_r % p
+    x_r = x_r
     y_r = lam * (px - x_r)
     y_r -= py
-    y_r = y_r % p
+    y_r = y_r
     return x_r, y_r
         
 # https://en.wikipedia.org/wiki/Elliptic_curve_point_multiplication#Point_doubling
