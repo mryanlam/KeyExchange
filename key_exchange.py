@@ -6,6 +6,9 @@ import argparse
 import json
 import math
 import random
+import fractions
+
+prime_factors_global = []
 
 def main(args):
     parse = argparse.ArgumentParser()
@@ -59,6 +62,7 @@ def start_server(port, pSize):
                 if RabinMiller(p):
                     print('Found prime ' + str(p))
                     break
+            print('gathering prime factors...')
             alph = generator(p)
             a = random.randrange(1, p - 1)
             beta = buildkey(alph, a, p)
@@ -188,9 +192,8 @@ def RabinMiller(n, k = 7):
 #Find Generator
 def generator(p):
     k = p -1
-    factors = []
-    factors = gather_prime_factors(k, factors)
-    #factors = prime_factors(k)
+    #gather_prime_factors(k)
+    prime_factors(k)
     while True:
         alph = random.randrange(1, p)
         print('Testing genrator ' + str(alph))
@@ -206,6 +209,20 @@ def generator(p):
         if found:
            return alph
     return 0
+
+def prime_factors(n):
+    print('gathering prime factors...')
+    i = 2
+    while i * i <= n:
+        if n % i:
+            i += 1
+        else:
+            n //= i
+            prime_factors_global.append(i)
+            print('found factor ' + str(i))
+    if n > 1:
+        print('found factor ' + str(i))
+        prime_factors_global.append(n)
         
 
 #Returns a random prime number
@@ -213,60 +230,38 @@ def get_random_prime():
     random_generator = Crypto.Random.new().read
     return Crypto.Util.number.getPrime(1024, random_generator)
 
-def prime_factors(n):
-    print('gathering prime factors...')
-    i = 2
-    factors = []
-    while i * i <= n:
-        if n % i:
-            i += 1
-        else:
-            n //= i
-            factors.append(i)
-            print('found factor ' + str(i))
-    if n > 1:
-        factors.append(n)
-    return factors
 
-def gather_prime_factors(m, factors):
-    print('gathering prime factors...')
+def gather_prime_factors(m):
     #factors = []
-    i = 100;
+    b = 500
     d = -1
-    while result < 0:
+    while d < 0:
         d = polar_alg(m, b)
-        b = b + 1
+        if ((d == m) or (d == 1)):
+            break
+        if ((d < 1) or (d > m)):
+            b = b + 1
     c = m / d
-    factors = check(d, factors)
-    factors = check(c, factors)
-    return factors
+    check(d)
+    check(c)
 
-def check(n, factors):
-    if RabinMiller(n):
-        factors.append(n)
+
+def check(n):
+    if (RabinMiller(n)):
+        prime_factors_global.append(n)
         print('found factor ' + str(n))
-    else:
-        factors = gather_prime_factors(n, factors)
-    return factors
+    elif n != 1:
+        gather_prime_factors(n)
     
 def polar_alg(m, b):
     a = 2
     for j in xrange(2, b):
         a = (a**j) % m
-    d = gcd(a - 1, m)
-    if (1 < d) and (d < m):
-        return d
-    else:
-        return -1
+    print('a = ' + str(a))
+    d = fractions.gcd(a - 1, m) #gcd(a - 1, m)
+    print('gcd = ' + str(d))
+    return d
 
-# y is bigger factor        
-def gcd(x, y):
-    r = 0
-    while (x > 0):
-        r = y % x
-        y = x
-        x = r
-    return r
 
 if __name__ == '__main__':
     main(sys.argv[1:])
