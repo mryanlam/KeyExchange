@@ -84,7 +84,6 @@ def start_server(port, pSize):
             print('beta is ' + str(beta))
             print('a is ' + str(a))
             print('y1 is ' + str(aes_key['y1']))
-            print('y2 is ' + str(aes_key['y2']))
             print('key is ' + str(AESkey))
             
             cipher = AES.new(str(AESkey)) # check formating
@@ -121,7 +120,6 @@ def connect_to_server(ip, port, keySize):
     print('beta is ' + str(public_key['beta']))
     print('k is ' + str(k))
     print('y1 is ' + str(y1))
-    print('y2 is ' + str(y2))
     #send encrypted key to p1
     clientsocket.send(json.dumps(AES_message))
     print('key is ' + str(AESkey))
