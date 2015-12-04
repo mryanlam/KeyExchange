@@ -15,7 +15,6 @@ def main(args):
     parse.add_argument('-i', '--ip', type = str)
     parse.add_argument('-p', '--port', type = int, required = True)
     parse.add_argument('-size', '--pSize', type = int, default = 16)
-    
     args = parse.parse_args()
     isServer = args.isServer
     ip = args.ip
@@ -44,8 +43,7 @@ def start_server(port, pSize):
                     break
             a, b = build_curve(10)
             print('Using curve y^2 = x^3 + ' + str(a) + 'x + ' + str(b))
-            # find an alpha that is in the curve, may need to modify to use koblitz
-            #alphX = generator(p)
+            # find an alpha that is in the curve
             alphX = random.randrange(-20, 20)
             alphY = 0
             while True:
@@ -78,7 +76,7 @@ def start_server(port, pSize):
             AESkey = decrypt(aes_key['y1X'], aes_key['y1Y'], aes_key['coords'], a, privKey, aux_base)
             
             print('Key is ' + str(AESkey))
-            cipher = AES.new(str(AESkey)) # check formating
+            cipher = AES.new(str(AESkey))
             msg = connection.recv(128)
             msg = cipher.decrypt(msg)
             print('Final Message : ' + msg)
@@ -89,16 +87,17 @@ def start_server(port, pSize):
 def decrypt(y1X, y1Y, coords, a, privKey, aux_base):
     key = ''
     for point in coords:
-        x, y = curve_dot(y1X, y1Y, a, privKey)
+        print(str(point['x']) + ' ' + str(point['y']))
+        ax, ay = curve_dot(y1X, y1Y, a, privKey)
         #need inverse of y1?
-        x, y = curve_add(point['x'], point['y'], -x, -y)
+        x, y = curve_add(point['x'], point['y'], ax, -ay)
         #check if still int
         m = (x - 1) / aux_base
         key = key + str(int(m))
     return int(key)
         
 def curve_dot(x, y, a, q):
-    # q(x,y)256
+    # q(x,y)
     for i in xrange(q):
         lam = calc_lambda(x,y,a)
         x_r = (lam ** 2)
@@ -129,7 +128,7 @@ def connect_to_server(ip, port):
     clientsocket.send('hello')
     json_pub_key = clientsocket.recv(256)
     public_key = json.loads(json_pub_key)
-    k = random.randrange(1, public_key['p'] - 1)
+    k = random.randrange(1, 20)
     y1X, y1Y = curve_dot(public_key['alphX'], public_key['alphY'], public_key['a'], k)
     y2X, y2Y = curve_dot(public_key['betaX'], public_key['betaY'], public_key['a'] , k)
     AESkey = random.randrange(1000000000000000, 9999999999999999)
@@ -138,6 +137,7 @@ def connect_to_server(ip, port):
     #koblitz each character
     encoded_AESkey = [] # List of dicts that have x and y as keys
     for char in str_AESkey:
+        print(char)
         x, y = koblitz(public_key['a'], public_key['b'], public_key['p'], int(char), public_key['aux_base'])
         coords = dict()
         coords['x'], coords['y'] = curve_add(x, y, y2X, y2Y)
@@ -147,7 +147,6 @@ def connect_to_server(ip, port):
     AES_message['y1Y'] = y1Y
     AES_message['coords'] = encoded_AESkey
     clientsocket.send(json.dumps(AES_message))
-    
     cipher = AES.new(str_AESkey)
     msg = cipher.encrypt('1111111111111111')
     clientsocket.send(msg)
@@ -164,8 +163,8 @@ def koblitz(a, b, p, m, k):
             return (x, math.sqrt(z))
         else:
             i = i + 1
-    
-
+ 
+#calculates z value, returns -1 if not valid
 def get_z(x, a, b, p):
     z = (x**3) + (a*x) + b
     z = z % p
