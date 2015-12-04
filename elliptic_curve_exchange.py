@@ -42,18 +42,19 @@ def start_server(port, pSize):
                 if RabinMiller(p):
                     print('Found prime ' + str(p))
                     break
-            a, b = build_curve(p)
+            a, b = build_curve(10)
             print('Using curve y^2 = x^3 + ' + str(a) + 'x + ' + str(b))
             # find an alpha that is in the curve, may need to modify to use koblitz
-            alphX = generator(p)
+            #alphX = generator(p)
+            alphX = random.randrange(-20, 20)
             alphY = 0
-            while true:
+            while True:
                 z = get_z(alphX, a, b, p)
                 if z != -1:
-                    alphY = math.sqrt(z)
+                    alphY = int(math.sqrt(z))
                     break
                 else:
-                    alphX == alphX + 1;
+                    alphX = alphX + 1;
             print('Chose alpha = (' + str(alphX) + ', ' + str(alphY) + ')')
             privKey = random.randrange(1, p - 1)
             print('Private key is ' + str(privKey))
@@ -102,7 +103,7 @@ def curve_dot(x, y, a, q):
         lam = calc_lambda(x,y,a)
         x_r = (lam ** 2)
         x_r -= 2 * x
-        y_r = lam * (x_r - x)
+        y_r = lam * (x - x_r)
         y_r -= y
         x = x_r
         y = y_r
@@ -126,7 +127,7 @@ def connect_to_server(ip, port):
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     clientsocket.connect((ip, port))
     clientsocket.send('hello')
-    json_pub_key = clientsocket.recv(128)
+    json_pub_key = clientsocket.recv(256)
     public_key = json.loads(json_pub_key)
     k = random.randrange(1, public_key['p'] - 1)
     y1X, y1Y = curve_dot(public_key['alphX'], public_key['alphY'], k)
@@ -169,7 +170,7 @@ def koblitz(a, b, p, m, k):
 def get_z(x, a, b, p):
     z = (x**3) + (a*x) + b
     z = z % p
-    z1 = z**((p-1)/2)
+    z1 = z**((p-1)/2) % p
     if (z1 == 1):
         return z
     else:
