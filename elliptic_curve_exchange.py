@@ -7,6 +7,8 @@ import random
 import json
 import math
 
+prime_factors_global = []
+
 def main(args):
     parse = argparse.ArgumentParser()
     parse.add_argument('-s', '--isServer', type = int)
@@ -42,7 +44,7 @@ def start_server(port, pSize):
                 if RabinMiller(p):
                     print('Found prime ' + str(p))
                     break
-            a, b = build_curve()
+            a, b = build_curve(p)
             print('Using curve y^2 = x^3 + ' + str(a) + 'x + ' + str(b))
             # find an alpha that is in the curve, may need to modify to use koblitz
             alphX = generator(p)
@@ -75,8 +77,14 @@ def start_server(port, pSize):
             json_aes_key = connection.recv(128)
             aes_key = json.loads(json_aes_key)
             AESkey = decrypt(aes_key['y1X'], aes_key['y1Y'], aes_key['coords'], a, privKey, aux_base)
+            
             print('Key is ' + str(AESkey))
-            #DECRYPT KEY
+            cipher = AES.new(str(AESkey)) # check formating
+            msg = connection.recv(64)
+            msg = cipher.decrypt(msg)
+            print('Final Message : ' + depaddMsg(msg))
+            msg = cipher.encrypt('1111111111111111')
+            connection.send(msg)
             break
 
 def decrypt(y1X, y1Y, coords, a, privKey, aux_base):
@@ -126,7 +134,7 @@ def connect_to_server(ip, port, keySize):
     y1X, y1Y = curve_dot(public_key['alphX'], public_key['alphY'], k)
     y2X, y1Y = curve_dot(public_key['betaX'], public_key['betaY'], k)
     AESkey = random.getrandbits(keySize)
-    str_AESkey = str(AESkey)
+    AESkey = random.randrange(1000000000000000, 9999999999999999)
     print('Key = ' + str_AESkey)
     #koblitz each character
     encoded_AESkey = [] # List of dicts that have x and y as keys
@@ -141,6 +149,13 @@ def connect_to_server(ip, port, keySize):
     AES_message['y1Y'] = y1Y
     AES_message['coords'] = coords
     clientsocket.send(json.dumps(AES_message))
+    
+    cipher = AES.new(str(AESkey))
+    msg = cipher.encrypt('1111111111111111')
+    clientsocket.send(msg)
+    msg = clientsocket.recv(64)
+    msg = cipher.decrypt(msg)
+    print('Response : ' + depaddMsg(msg))
     
 def koblitz(a, b, p, m, k):
     i = 1
@@ -163,7 +178,7 @@ def get_z(x, a, b, p):
         return -1
 
 def build_curve(p):
-    while true:
+    while True:
         a = random.randrange(1, p - 1)
         b = random.randrange(1, p - 1)
         test =  4*(a**3) + 27*(b**2)
@@ -174,8 +189,8 @@ def build_curve(p):
 def generator(p):
     k = p -1
     factors = []
-    factors = gather_prime_factors(k, factors)
-    #factors = prime_factors(k)
+    #factors = gather_prime_factors(k, factors)
+    factors = prime_factors(k)
     while True:
         alph = random.randrange(1, p)
         print('Testing genrator ' + str(alph))
@@ -215,46 +230,19 @@ def RabinMiller(n, k = 7):
                     return False  
     return True
     
-# Gathers prime factors in m    
-def gather_prime_factors(m, factors):
+def prime_factors(n):
     print('gathering prime factors...')
-    #factors = []
-    i = 100;
-    d = -1
-    while result < 0:
-        d = polar_alg(m, b)
-        b = b + 1
-    c = m / d
-    factors = check(d, factors)
-    factors = check(c, factors)
-    return factors
-
-def check(n, factors):
-    if RabinMiller(n):
-        factors.append(n)
-        print('found factor ' + str(n))
-    else:
-        factors = gather_prime_factors(n, factors)
-    return factors
-    
-def polar_alg(m, b):
-    a = 2
-    for j in xrange(2, b):
-        a = (a**j) % m
-    d = gcd(a - 1, m)
-    if (1 < d) and (d < m):
-        return d
-    else:
-        return -1
-
-# y is bigger factor        
-def gcd(x, y):
-    r = 0
-    while (x > 0):
-        r = y % x
-        y = x
-        x = r
-    return r
+    i = 2
+    while i * i <= n:
+        if n % i:
+            i += 1
+        else:
+            n //= i
+            prime_factors_global.append(i)
+            print('found factor ' + str(i))
+    if n > 1:
+        print('found factor ' + str(i))
+        prime_factors_global.append(n)
     
 if __name__ == '__main__':
     main(sys.argv[1:])
