@@ -124,7 +124,7 @@ def curve_add(px, py, qx, qy, p):
 # https://en.wikipedia.org/wiki/Elliptic_curve_point_multiplication#Point_doubling
 def calc_lambda(x, y, a, p):
     top = 3 * (x ** 2) + a
-    return (top / (2 * y)) % p
+    return (top / (2 * y))
 
 def connect_to_server(ip, port):
     clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
