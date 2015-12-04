@@ -12,7 +12,7 @@ def main(args):
     parse.add_argument('-s', '--isServer', type = int)
     parse.add_argument('-i', '--ip', type = str)
     parse.add_argument('-p', '--port', type = int, required = True)
-    parse.add_argument('-s', '--pSize', type = int, default = 64)
+    parse.add_argument('-size', '--pSize', type = int, default = 64)
     parse.add_argument('-k', '--keySize', type = int, default = 32)
     
     args = parse.parse_args()
@@ -53,12 +53,12 @@ def start_server(port, pSize):
                     alphY = math.sqrt(z)
                     break
                 else:
-                    alphX++;
+                    alphX == alphX + 1;
             print('Chose alpha = (' + str(alphX) + ', ' + str(alphY) + ')')
             privKey = random.randrange(1, p - 1)
-            print('Private key is ' + str(privKey)
+            print('Private key is ' + str(privKey))
             aux_base = random.randrange(1, 20)
-            print('Auxilary base is ' + str(aux_base)
+            print('Auxilary base is ' + str(aux_base))
             betaX, betaY = curve_dot(alphX, alphY, a, privKey)
             print('Beta = (' + str(betaX) + ', ' + str(betaY) + ')')
             public_key = dict()
@@ -150,7 +150,7 @@ def koblitz(a, b, p, m, k):
         if (z != -i):
             return (x, math.sqrt(z))
         else:
-            i++
+            i = i + 1
     
 
 def get_z(x, a, b, p):

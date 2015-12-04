@@ -12,7 +12,7 @@ def main(args):
     parse.add_argument('-s', '--isServer', type = int)
     parse.add_argument('-i', '--ip', type = str)
     parse.add_argument('-p', '--port', type = int, required = True)
-    parse.add_argument('-s', '--pSize', type = int, default = 64)
+    parse.add_argument('-size', '--pSize', type = int, default = 64)
     parse.add_argument('-k', '--keySize', type = int, default = 32)
     
     args = parse.parse_args()
