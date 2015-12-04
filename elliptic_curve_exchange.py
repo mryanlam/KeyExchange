@@ -79,7 +79,7 @@ def start_server(port, pSize):
             
             print('Key is ' + str(AESkey))
             cipher = AES.new(str(AESkey)) # check formating
-            msg = connection.recv(64)
+            msg = connection.recv(128)
             msg = cipher.decrypt(msg)
             print('Final Message : ' + depaddMsg(msg))
             msg = cipher.encrypt('1111111111111111')
@@ -151,7 +151,7 @@ def connect_to_server(ip, port):
     cipher = AES.new(str_AESkey)
     msg = cipher.encrypt('1111111111111111')
     clientsocket.send(msg)
-    msg = clientsocket.recv(64)
+    msg = clientsocket.recv(128)
     msg = cipher.decrypt(msg)
     print('Response : ' + depaddMsg(msg))
     
