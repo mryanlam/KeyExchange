@@ -108,7 +108,8 @@ def connect_to_server(ip, port):
     print('key is ' + str(AESkey))
     print sys.getsizeof(AESkey)
     cipher = AES.new(str(AESkey)) # check formating
-    msg = cipher.encrypt('1111111111111111')
+    msg = paddMsg('This is a test message')
+    msg = cipher.encrypt(msg)
     clientsocket.send(msg)
     msg = clientsocket.recv(64)
     msg = cipher.decrypt(msg)
@@ -124,6 +125,7 @@ def depaddMsg(msg):
          if msg[i] == '$':
              msg = msg[:20]
              break
+    return msg
          
 
     
