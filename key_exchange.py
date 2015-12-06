@@ -118,6 +118,7 @@ def connect_to_server(ip, port):
 def paddMsg(msg):
      while (sys.getsizeof(msg)) % 16 != 0:
          msg = msg + '$'
+     sys.getsizeof(msg)
      return msg
     
 def depaddMsg(msg):
