@@ -115,7 +115,7 @@ def connect_to_server(ip, port):
     print('Response : ' + msg)
     
 def paddMsg(msg):
-     while (sys.getsizeof(msg)) % 16 != 0
+     while (sys.getsizeof(msg)) % 16 != 0:
          msg = msg + '$'
      return msg
     
