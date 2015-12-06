@@ -113,6 +113,18 @@ def connect_to_server(ip, port):
     msg = clientsocket.recv(64)
     msg = cipher.decrypt(msg)
     print('Response : ' + msg)
+    
+def paddMsg(msg):
+     while (sys.getsizeof(msg)) % 16 != 0
+         msg = msg + '$'
+     return msg
+    
+def depaddMsg(msg):
+    for i in xrange(len(msg)):
+         if msg[i] == '$':
+             msg = msg[:20]
+             break
+         
 
     
 # p = prime number, alph = generator
