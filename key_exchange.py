@@ -76,8 +76,9 @@ def start_server(port, pSize):
             cipher = AES.new(str(AESkey)) # check formating
             msg = connection.recv(64)
             msg = cipher.decrypt(msg)
+            msg = depaddMsg(msg)
             print('Final Message : ' + msg)
-            msg = cipher.encrypt('1111111111111111')
+            msg = cipher.encrypt(paddMsg('This is a test response'))
             connection.send(msg)
             break
      
@@ -113,10 +114,11 @@ def connect_to_server(ip, port):
     clientsocket.send(msg)
     msg = clientsocket.recv(64)
     msg = cipher.decrypt(msg)
+    msg = depaddMsg(msg)
     print('Response : ' + msg)
     
 def paddMsg(msg):
-     while sys.getsizeof(msg) % 16 != 0:
+     while len(msg) % 16 != 0:
          msg = msg + '$'
      sys.getsizeof(msg)
      return msg
@@ -124,7 +126,7 @@ def paddMsg(msg):
 def depaddMsg(msg):
     for i in xrange(len(msg)):
          if msg[i] == '$':
-             msg = msg[:20]
+             msg = msg[:i]
              break
     return msg
          
