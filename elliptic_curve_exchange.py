@@ -47,7 +47,7 @@ def start_server(port, pSize):
             b = 8
             print('Using curve y^2 = x^3 + ' + str(a) + 'x + ' + str(b))
             # find an alpha that is in the curve
-            alphX = random.randrange(0, 20)
+            alphX = random.randrange(1, 20)
             alphY = 0
             while True:
                 z = get_z(alphX, a, b, p)
