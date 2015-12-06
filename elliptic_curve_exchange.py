@@ -63,7 +63,6 @@ def start_server(port, pSize):
             print('Chose alpha = (' + str(alphX) + ', ' + str(alphY) + ')')
             privKey = random.randrange(1, 20)
             print('Private key is ' + str(privKey))
-            #aux_base = random.randrange(1, 20)
             aux_base = 17
             print('Auxilary base is ' + str(aux_base))
             betaX, betaY = curve_dot(alphX, alphY, a, privKey, p)
@@ -95,14 +94,11 @@ def start_server(port, pSize):
 def decrypt(y1X, y1Y, coords, a, privKey, aux_base, p):
     key = ''
     for point in coords:
-        print(str(point['x']) + ' ' + str(point['y']))
         ax, ay = curve_dot(y1X, y1Y, a, privKey, p)
         #need inverse of y1
         x, y = curve_add(point['x'], point['y'], ax, ay, p)
         #check if still int
-        print('x = ' + str(x))
         m = (x - 1) / aux_base
-        print(str(m))
         key = key + str(int(m))
     return int(key)
         
@@ -152,10 +148,8 @@ def connect_to_server(ip, port):
     encoded_AESkey = [] # List of dicts that have x and y as keys
     for char in str_AESkey:
         x, y = koblitz(public_key['a'], public_key['b'], public_key['p'], int(char), public_key['aux_base'])
-        print('x = ' + str(x))
         coords = dict()
         coords['x'], coords['y'] = curve_add(x, y, y2X, y2Y, public_key['p'])
-        print(str(coords['x']) + ' ' + str(coords['y']))
         encoded_AESkey.append(coords)
     AES_message = dict()
     AES_message['y1X'] = y1X
