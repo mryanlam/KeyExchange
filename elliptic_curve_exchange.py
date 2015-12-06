@@ -164,7 +164,7 @@ def connect_to_server(ip, port):
     msg = cipher.encrypt(paddMsg('This is a test message'))
     clientsocket.send(msg)
     msg = clientsocket.recv(128)
-    msg = dePaddMsg(cipher.decrypt(msg))
+    msg = depaddMsg(cipher.decrypt(msg))
     print('Response : ' + msg)
     
 def paddMsg(msg):
