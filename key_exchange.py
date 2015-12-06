@@ -146,11 +146,6 @@ def gety1(p, alph, k):
     return y1
     
 def gety2(p, beta, k, AESkey):
-    print p
-    print beta
-    print k
-    print AESkey
-    print "-----"
     y2 = AESkey * (beta**k)
     y2 = y2 % p
     return y2

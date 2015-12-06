@@ -85,8 +85,8 @@ def start_server(port, pSize):
             cipher = AES.new(str(AESkey))
             msg = connection.recv(128)
             msg = cipher.decrypt(msg)
-            print('Final Message : ' + msg)
-            msg = cipher.encrypt('1111111111111111')
+            print('Final Message : ' + depadMsg(msg))
+            msg = cipher.encrypt(paddMsg('This is a test response'))
             connection.send(msg)
             break
 
@@ -161,11 +161,25 @@ def connect_to_server(ip, port):
     AES_message['coords'] = encoded_AESkey
     clientsocket.send(json.dumps(AES_message))
     cipher = AES.new(str_AESkey)
-    msg = cipher.encrypt('1111111111111111')
+    msg = cipher.encrypt(paddMsg('This is a test message'))
     clientsocket.send(msg)
     msg = clientsocket.recv(128)
-    msg = cipher.decrypt(msg)
+    msg = dePaddMsg(cipher.decrypt(msg))
     print('Response : ' + msg)
+    
+def paddMsg(msg):
+     while len(msg) % 16 != 0:
+         msg = msg + '$'
+     sys.getsizeof(msg)
+     return msg
+    
+def depaddMsg(msg):
+    for i in xrange(len(msg)):
+         if msg[i] == '$':
+             msg = msg[:i]
+             break
+    return msg
+         
     
 def koblitz(a, b, p, m, k):
     i = 1
