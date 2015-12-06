@@ -47,17 +47,19 @@ def start_server(port, pSize):
             b = 8
             print('Using curve y^2 = x^3 + ' + str(a) + 'x + ' + str(b))
             # find an alpha that is in the curve
-            alphX = random.randrange(1, 20)
-            alphY = 0
-            while True:
-                z = get_z(alphX, a, b, p)
-                if z != -1:
-                    alphY = int(math.sqrt(z))
-                    break
-                else:
-                    alphX = alphX + 1;
+            #alphX = random.randrange(1, 20)
+            #alphY = 0
+            #while True:
+            #    z = get_z(alphX, a, b, p)
+            #    if z != -1:
+            #        alphY = int(math.sqrt(z))
+            #        break
+            #    else:
+            #        alphX = alphX + 1;
             #alphX = -6
             #alphY = 206
+            alphX = 15
+            alphY = 58
             print('Chose alpha = (' + str(alphX) + ', ' + str(alphY) + ')')
             privKey = random.randrange(1, 20)
             print('Private key is ' + str(privKey))
